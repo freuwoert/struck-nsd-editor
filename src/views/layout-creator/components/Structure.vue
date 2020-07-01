@@ -7,6 +7,8 @@
 
         <div class="content">{{structure.content}}</div>
 
+        <structure-input class="add-btn"></structure-input>
+
         <svg v-show="structure.type === 'break'" class="break-path" preserveAspectRatio="none" viewBox="0 0 10 40">
             <polyline points="10 0 0 20 10 40"></polyline>
         </svg>
@@ -19,6 +21,8 @@
 </template>
 
 <script>
+    import StructureInput from '../../components/StructureInput'
+
     export default {
         name: 'structure',
         props: {
@@ -26,6 +30,9 @@
                 type: Object,
                 required: true
             }
+        },
+        components: {
+            StructureInput,
         }
     }
 </script>
@@ -39,6 +46,7 @@
         width: 100%
         border: 1px solid black
 
+
     .structure
         display: block
         text-align: left
@@ -47,6 +55,19 @@
         color: black
         border: 1px solid black
         background: white
+    
+        .add-btn
+            position: absolute
+            top: 20px
+            left: 50%
+            transform: translateX(-50%)
+            pointer-events: none
+            opacity: 0
+            z-index: 1
+
+        &:hover > .add-btn
+            opacity: 1
+            pointer-events: all
 
         .content
             font-size: 15px

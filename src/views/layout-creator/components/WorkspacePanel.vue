@@ -10,7 +10,6 @@
 
         <div class="center">
             <!-- <colorpicker></colorpicker> -->
-            <structure-input></structure-input>
             <div class="structure-container">
                 <structure v-for="(child, i) in docStructures.children" :key="i" :structure="child"></structure>
                 <!--
