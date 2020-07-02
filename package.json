@@ -1,5 +1,5 @@
 {
-  "name": "vudesigner",
+  "name": "struck-nsd-editor",
   "description": "efficient web-based-ui editor",
   "version": "0.2.0",
   "private": true,
@@ -15,8 +15,8 @@
     "postuninstall": "electron-builder install-app-deps"
   },
   "build": {
-    "appId": "io.vudesigner.vudesigner",
-    "productName": "VuDesigner",
+    "appId": "com.freuwort.struck",
+    "productName": "Struck NSD Editor",
     "npmArgs": "--production",
     "win": {
       "target": "nsis",
@@ -38,10 +38,10 @@
   },
   "fileAssociations": [
     {
-      "name": "VuDesigner VDD",
-      "description": "VuDesigner Document",
+      "name": "Struck",
+      "description": "Struck Dokument",
       "ext": [
-        "vdd"
+        "struck"
       ]
     }
   ],
@@ -50,11 +50,10 @@
     "url": "git+https://github.com/freuwoert/vudesigner.git"
   },
   "keywords": [
-    "css",
-    "html",
-    "layout",
+    "nsd",
+    "structogram",
     "editor",
-    "vudesigner"
+    "struck"
   ],
   "author": "Maurice Freuwört",
   "license": "UNLICENSED",

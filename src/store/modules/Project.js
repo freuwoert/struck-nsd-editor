@@ -8,7 +8,7 @@ const cloneDeep = require('lodash.clonedeep')
 const state = {
     activeUUID: null,
     history: [],
-    tabs: [], // ToDo: rename to editors
+    tabs: [new TabStruct('UUID1').getStruct()], // ToDo: rename to editors
     document: new TabStruct().getStruct()
 }
 

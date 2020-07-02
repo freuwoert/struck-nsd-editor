@@ -2,7 +2,15 @@
     <div class="option-panel">
         <div class="more" @click="toggleMoreMenu()">&#983900;</div>
 
-        <div class="more-menu" v-show="moreMenu">
+        <div class="controls">
+            <div class="control-icon-btn">&#984396;</div>
+            <div class="control-icon-btn disabled">&#984142;</div>
+            <div class="control-icon-btn disabled">&#985722;</div>
+            <div class="control-icon-btn">&#984813;</div>
+            <div class="control-icon-btn">&#984812;</div>
+        </div>
+
+        <div class="more-menu" :class="{'active':moreMenu}">
             <div class="option">
                 <div class="text">Neu</div>
                 <div class="shortcut">STRG + N</div>
@@ -64,15 +72,44 @@
         grid-area: option_panel
         background: var(--background)
         position: relative
-        text-align: left
+        text-align: center
+
+        .controls
+            height: 40px
+            user-select: none
+            white-space: nowrap
+
+            .control-icon-btn
+                height: 30px
+                width: 30px
+                line-height: 30px
+                border-radius: 30px
+                margin: 5px 2px
+                overflow: hidden
+                color: var(--color)
+                font-size: 20px
+                font-family: 'Material Icons'
+                vertical-align: top
+                text-align: center
+                cursor: pointer
+
+                &:hover
+                    background: var(--color-dimm)
+                    color: var(--primary)
+
+                &.disabled
+                    background: transparent
+                    color: #999
+                    cursor: initial
 
         .more
             width: 32px
             height: 32px
             line-height: 32px
             text-align: center
-            float: left
-            margin: 4px 8px
+            position: absolute
+            left: 4px
+            top: 4px
             color: var(--color)
             font-family: 'Material Icons'
             font-size: 20px
@@ -89,12 +126,18 @@
             top: 75px
             left: 0px
             width: 300px
+            text-align: left
             height: calc(100% - 75px)
             background: var(--background)
             border-radius: 0px 7px 0px 0px
             z-index: 2
             margin-bottom: 10px
             padding: 15px 0
+            transition: all 200ms cubic-bezier(0.65, 0.05, 0.36, 1)
+            transform: translateX(-100%)
+
+            &.active
+                transform: translateX(0%)
 
             .divider
                 width: calc(100% - 30px)

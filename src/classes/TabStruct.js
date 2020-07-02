@@ -16,30 +16,29 @@ export default class TabStruct {
             children: [
                 {
                     type: 'command',
-                    content: 'a = 650'
+                    content: 'command'
+                },
+                {
+                    type: 'call',
+                    content: 'call()'
+                },
+                {
+                    type: 'break',
+                    content: 'break'
                 },
                 {
                     type: 'while',
-                    content: 'i in range(100)',
+                    content: 'while',
                     children: []
                 },
                 {
                     type: 'endless-loop',
-                    content: 'gameLoop',
-                    children: [
-                        {
-                            type: 'call',
-                            content: 'updateFrame()'
-                        },
-                        {
-                            type: 'break',
-                            content: 'break'
-                        },
-                    ]
+                    content: 'infinite-loop',
+                    children: []
                 },
                 {
                     type: 'do-while',
-                    content: 'i in range(50)',
+                    content: 'do-while',
                     children: []
                 },
             ]
@@ -49,7 +48,7 @@ export default class TabStruct {
         if( this.UUID )
         {
             this.ui.view = 'LANDING'
-            this.meta.name = 'New Tab'
+            this.meta.name = 'Untitled NSD'
             this.meta.isGhost = false
         }
     }
