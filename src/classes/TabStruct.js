@@ -33,7 +33,7 @@ export default class TabStruct {
                 },
                 {
                     type: 'endless-loop',
-                    content: 'infinite-loop',
+                    content: 'endless-loop',
                     children: []
                 },
                 {

@@ -2,25 +2,11 @@
     <div class="workspace">
         <div class="center">
             <!-- <colorpicker></colorpicker> -->
-            <structure-input></structure-input>
+            <structure-input @create-element="createElement($event)"></structure-input>
+
             <div class="structure-container">
                 <div @dragstart.prevent @mousedown="mouseDown($event)" class="hitbox first"></div>
-                <structure v-for="(child, i) in docStructures.children" :key="i" :trace="'S:N;C:'+i" :structure="child"></structure>
-                <!--
-                <div class="structure if">
-                    <div class="content">b == 100</div>
-                    <svg class="if-path" preserveAspectRatio="none" viewBox="0 0 400 40">
-                        <polyline points="0 0 200 40 400 0"></polyline>
-                    </svg>
-                    <div class="item-align">
-                        <div class="if-container"></div>
-                        <div class="if-container">
-                            <div class="structure command">
-                                <div class="content">a = 650</div>
-                            </div>
-                        </div>
-                    </div>
-                </div> -->
+                <structure v-for="(child, i) in docStructures.children" :key="i" :trace="'N:'+i" :structure="child"></structure>
             </div>
         </div>
     </div>
@@ -40,10 +26,12 @@
             ]),
         },
         methods: {
-            ...mapActions([]),
+            ...mapActions([
+                'createElement'
+            ]),
 
             mouseDown(event) {
-                EventBus.$emit('toggle-create-element', event)
+                EventBus.$emit('toggle-create-element', {event, trace: 'N:0', position: 'above'})
             }
         },
         components: {

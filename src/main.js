@@ -6,13 +6,6 @@ import { EventBus } from '@/assets/js/event-bus'
 import { mapGetters, mapActions } from 'vuex'
 
 // GLOBAL REQUIREMENTS
-const $ = require('jquery')
-const emmet = require('emmet')
-const Fuse = require('fuse.js')
-const anime = require('animejs')
-const pretty = require('pretty')
-const Prism = require('prismjs')
-const Toast = require('@/assets/js/modules/toast.js')
 const settings = require('electron-settings')
 const Mousetrap = require('mousetrap')
 const remote = require('electron').remote
@@ -42,7 +35,7 @@ const app = new Vue({
         EventBus.$on('save', () => {
             this.saveFile()
         })
-        EventBus.$on('force-save', () => {
+        EventBus.$on('save-as', () => {
             this.saveFile({force: true})
         })
     },
@@ -53,9 +46,11 @@ const app = new Vue({
 // keyboard events //
 /////////////////////
 
-Mousetrap.bind(['ctrl+s','command+s'],                  function(){ EventBus.$emit('save') })
-Mousetrap.bind(['ctrl+shift+s','command+shift+s'],      function(){ EventBus.$emit('force-save') })
-Mousetrap.bind(['del','backspace'],                     function(){ EventBus.$emit('delete') })
+Mousetrap.bind(['ctrl+n','command+n'],             function(){ EventBus.$emit('new') })
+Mousetrap.bind(['ctrl+o','command+o'],             function(){ EventBus.$emit('open') })
+Mousetrap.bind(['ctrl+s','command+s'],             function(){ EventBus.$emit('save') })
+Mousetrap.bind(['ctrl+shift+s','command+shift+s'], function(){ EventBus.$emit('save-as') })
+Mousetrap.bind(['del','backspace'],                function(){ EventBus.$emit('delete') })
 
 
 // When document has loaded, initialise

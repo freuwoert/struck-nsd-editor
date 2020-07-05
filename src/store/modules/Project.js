@@ -302,81 +302,36 @@ const actions = {
     // Document //
     //////////////
 
-    insertStructure({ commit, state, getters }, payload) {
+    createElement({ commit, state, getters }, payload) {
         
-        let uuidGen = require('uuid')
-        let path = state.document.structures
-        let isValid = true
+        let path = 'state.document.structures'
+        let layers = null
 
 
 
-        // Checks for trace but still continous because of inserion methods start / end
-        if( !payload.trace )
-        {
-            isValid = false
-            payload.trace = ''
-        }
+        // Checks for trace
+        if( !payload.trace ) return
+
+        // Checks for trace
+        if( !payload.position ) return
+
+        // Checks for element
+        if( !payload.element ) return
 
 
 
-        // String to array
-        payload.trace = payload.trace.split('-')
-
-        // Cleans up Trace
-        if( ['start','end'].includes(payload.position) )
-        {
-            payload.trace = []
-        }
-
-
-
-        // check if trace is traverable
-        for (const i of payload.trace)
-        {
-            if( path.children && path.children[parseInt(i)] )
-            {
-                path = path.children[parseInt(i)]
-            }
-            else
-            {
-                isValid = false
-                break
-            }
-        }
-
-
-
-        // Recursively assign uuid if not already in place
-        let assignUUID = (element) => {
-
-            // Am I stupid or is there just no
-            // other way to remove the observer
-            element = cloneDeep(element)
-
-            if( !element.uuid )
-            {
-                element.uuid = uuidGen.v4()
-            }
-
-            for (let i = 0; i < element.children.length; i++)
-            {
-                element.children[i] = assignUUID(element.children[i])
-            }
-
-            return element
-        }
-        
-        payload.element = assignUUID(payload.element)
-
+        // Deep-clones element
+        payload.element = cloneDeep(payload.element)
         
 
-        // isValod or insertion method start / end
-        if( isValid || ['start','end'].includes(payload.position) )
-        {
-            commit('setChanged_', true)
-            commit('setBackgroundChanged_', {index: getters.activeIndex , changed: true})
-            commit('insertStructure_', { trace: payload.trace, position: payload.position, element: payload.element })
-        }
+        
+        // commit('setChanged_', true)
+        // commit('setBackgroundChanged_', {index: getters.activeIndex , changed: true})
+        commit('insertStructure_', {
+            trace: payload.trace,
+            position: payload.position,
+            element: payload.element
+        })
     },
 
     deleteStructures({ commit, state, getters }, payload) {
@@ -471,18 +426,6 @@ const actions = {
         commit('setView_', payload)
     },
 
-    setViewportSize({ commit }, payload) {
-        commit('setViewportSize_', {x: payload.x, y: payload.y})
-    },
-
-    rotateCoupledViewport({ commit }) {
-        commit('rotateCoupledViewport_')
-    },
-
-    toggleDecoupleViewport({ commit }) {
-        commit('toggleDecoupleViewport_')
-    },
-
 
 
     ///////////
@@ -570,28 +513,63 @@ const mutations = {
 
     insertStructure_: (state, param) => {
 
+        let layers = []
         let path = 'state.document.structures'
         let location = null
         let injectPosition = 0
 
+        
+        // Trace to layers
+        layers = param.trace.split('-')
+        
         // Get inject position if element shall be inserted below
         if( param.position === 'below' )
         {
-            injectPosition = param.trace.pop()
+            injectPosition = layers.pop()
         }
 
-        // Build JS path
-        for (const i of param.trace) 
+        // check if trace is traverable
+        for (let layer of layers)
         {
-            path += '.children['+i+']'
+            layer = layer.split(':')
+            
+            if( layer[0] !== 'N' )
+            {
+                path += `.slots[${layer[0]}]`
+            }
+
+            if( layer[1] !== 'N' )
+            {
+                path += `.children[${layer[1]}]`
+            }
         }
+
+        if( param.position === 'below' )
+        {
+            injectPosition = injectPosition.split(':')
+    
+            if( injectPosition[0] !== 'N' )
+            {
+                path += `.slots[${injectPosition[0]}]`
+            }
+    
+            if( injectPosition[1] !== 'N' )
+            {
+                injectPosition = parseInt(injectPosition[1])
+            }
+            else
+            {
+                injectPosition = 0
+            }
+        }
+
 
         // Evaluate it
         location = eval(path)
 
         // Inject routine if inserted in element
         // TODO: needs check for closed tags
-        if(param.position === 'insert')
+        if(param.position === 'into')
         {
             location.children.unshift(JSON.parse(JSON.stringify(param.element)))
         }
@@ -600,18 +578,6 @@ const mutations = {
         else if(param.position === 'below')
         {
             location.children.splice(injectPosition+1, 0, JSON.parse(JSON.stringify(param.element)))
-        }
-
-        // Inject routine if inserted at start of document
-        else if(param.position === 'start')
-        {
-            location.children.unshift(JSON.parse(JSON.stringify(param.element)))
-        }
-
-        // Inject routine if inserted at end of document
-        else if(param.position === 'end')
-        {
-            location.children.push(JSON.parse(JSON.stringify(param.element)))
         }
     },
 

@@ -1,16 +1,16 @@
 <template>
     <div class="option-panel">
-        <div class="more" @click="toggleMoreMenu()">&#983900;</div>
+        <div class="more" title="Menü" @click="toggleMoreMenu()">&#983900;</div>
 
         <div class="controls">
-            <div class="control-icon-btn">&#984396;</div>
-            <div class="control-icon-btn disabled">&#984142;</div>
-            <div class="control-icon-btn disabled">&#985722;</div>
-            <div class="control-icon-btn">&#984813;</div>
-            <div class="control-icon-btn">&#984812;</div>
+            <div class="control-icon-btn" title="rückgängig machen">&#984396;</div>
+            <div class="control-icon-btn disabled" title="wiederherstellen">&#984142;</div>
+            <div class="control-icon-btn disabled" title="Auswahl löschen">&#985722;</div>
+            <!-- <div class="control-icon-btn">&#984813;</div>
+            <div class="control-icon-btn">&#984812;</div> -->
         </div>
 
-        <div class="more-menu" :class="{'active':moreMenu}">
+        <div class="more-menu" :class="{'active': moreMenu}">
             <div class="option">
                 <div class="text">Neu</div>
                 <div class="shortcut">STRG + N</div>

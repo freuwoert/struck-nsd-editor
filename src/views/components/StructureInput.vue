@@ -13,6 +13,7 @@
     </div>
 </template>
 <script>
+    import { mapGetters, mapActions } from 'vuex'
     import { EventBus } from '../../assets/js/event-bus.js'
 
     export default {
@@ -29,7 +30,7 @@
                     {name: 'Anweisung', type: 'command'},
                     {name: 'Abfrage', type: 'if'},
                     {name: 'Ausbruch', type: 'break'},
-                    {name: 'Endlos', type: 'infinite-loop'},
+                    {name: 'Endlos', type: 'endless-loop'},
                     {name: 'Switch', type: 'switch'},
                 ],
                 unit_: 2,
@@ -38,7 +39,14 @@
                 unitStartY: 0,
                 unitDeg: 0,
                 unitLen: 0,
+                position: null,
+                trace: null,
             }
+        },
+        computed: {
+            ...mapGetters([
+                'availableStructures'
+            ]),
         },
         mounted() {
             const vm = this
@@ -51,8 +59,10 @@
                 vm.unitMouseUp(event)
             }, false)
 
-            EventBus.$on('toggle-create-element', (event) => {
-                vm.unitMouseDown(event)
+            EventBus.$on('toggle-create-element', (data) => {
+                vm.position = data.position
+                vm.trace = data.trace
+                vm.unitMouseDown(data.event)
             })
         },
         methods: {
@@ -93,9 +103,21 @@
             },
 
             unitMouseUp(e) {
-                if( this.unitLen > 30 && this.unitFocused)
+                // Checks if user has selected structure in wheel
+                if( this.unitLen > 30 && this.unitFocused )
                 {
-                    this.$emit('create', this.units[this.unit_].type)
+                    // Checks if chosen structure is valid
+                    if( this.availableStructures.hasOwnProperty(this.units[this.unit_].type) )
+                    {
+                        // Gets structure from "archive / read only"
+                        let element = this.availableStructures[this.units[this.unit_].type]
+
+                        this.$emit('create-element', {
+                            trace: this.trace,
+                            position: this.position,
+                            element,
+                        })
+                    }
                 }
 
                 this.unitFocused = false

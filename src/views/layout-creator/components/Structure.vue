@@ -1,37 +1,49 @@
 <template>
     <div class="structure" :class="structure.type">
         <div v-if="structure.type === 'do-while'" class="loop-container">
-            <structure v-for="(child, i) in structure.children" :key="i" :trace="trace+'-S:N;C:'+i" :structure="child"></structure>
+            <structure v-for="(child, i) in structure.children" :key="i" :trace="trace+'-N:'+i" :structure="child"></structure>
             <div class="placeholder" v-show="structure.children.length == 0"></div>
         </div>
 
         <div class="content">{{structure.content}}</div>
-
-        <!-- <structure-input class="add-btn"></structure-input> -->
 
         <svg v-show="structure.type === 'break'" class="break-path" preserveAspectRatio="none" viewBox="0 0 10 40">
             <polyline points="10 0 0 20 10 40"></polyline>
         </svg>
 
         <div v-if="structure.type === 'while' || structure.type === 'endless-loop'" class="loop-container">
-            <structure v-for="(child, i) in structure.children" :key="i" :trace="trace+'-S:N;C:'+i" :structure="child"></structure>
+            <structure v-for="(child, i) in structure.children" :key="i" :trace="trace+'-N:'+i" :structure="child"></structure>
             <div class="placeholder" v-show="structure.children.length == 0"></div>
         </div>
 
+        <div v-if="structure.type === 'if' || structure.type === 'switch'" class="condition-container">
+            <div class="condition-slot" v-for="(slot, i) in structure.slots" :key="i">
+                <div class="label">{{slot.content}}</div>
+                <structure v-for="(child, j) in slot.children" :key="j" :trace="trace+'-'+i+':'+j" :structure="child"></structure>
+                <div class="placeholder" v-show="slot.children == 0"></div>
+
+                <div @dragstart.prevent @mousedown="mouseDown($event, 'into')" class="hitbox slot"></div>
+            </div>
+        </div>
+
+        <svg class="if-path" v-if="structure.type === 'if' || structure.type === 'switch'" preserveAspectRatio="none" viewBox="0 0 400 40">
+            <polyline points="0 0 200 40 400 0"></polyline>
+        </svg>
 
 
-        <div @dragstart.prevent @mousedown="mouseDown($event)" v-if="structure.type === 'command'" class="hitbox command"></div>
-        <div @dragstart.prevent @mousedown="mouseDown($event)" v-if="structure.type === 'call'" class="hitbox call"></div>
-        <div @dragstart.prevent @mousedown="mouseDown($event)" v-if="structure.type === 'break'" class="hitbox break"></div>
 
-        <div @dragstart.prevent @mousedown="mouseDown($event)" v-if="structure.type === 'while'" class="hitbox while-top"></div>
-        <div @dragstart.prevent @mousedown="mouseDown($event)" v-if="structure.type === 'while'" class="hitbox while-bottom"></div>
+        <div @dragstart.prevent @mousedown="mouseDown($event, 'below')" v-if="structure.type === 'command'" class="hitbox command"></div>
+        <div @dragstart.prevent @mousedown="mouseDown($event, 'below')" v-if="structure.type === 'call'" class="hitbox call"></div>
+        <div @dragstart.prevent @mousedown="mouseDown($event, 'below')" v-if="structure.type === 'break'" class="hitbox break"></div>
 
-        <div @dragstart.prevent @mousedown="mouseDown($event)" v-if="structure.type === 'do-while'" class="hitbox do-while-top" :class="{'full-size': structure.children.length == 0}"></div>
-        <div @dragstart.prevent @mousedown="mouseDown($event)" v-if="structure.type === 'do-while'" class="hitbox do-while-bottom"></div>
+        <div @dragstart.prevent @mousedown="mouseDown($event, 'into')" v-if="structure.type === 'while'" class="hitbox while-top"></div>
+        <div @dragstart.prevent @mousedown="mouseDown($event, 'below')" v-if="structure.type === 'while'" class="hitbox while-bottom"></div>
 
-        <div @dragstart.prevent @mousedown="mouseDown($event)" v-if="structure.type === 'endless-loop'" class="hitbox endless-loop-top"></div>
-        <div @dragstart.prevent @mousedown="mouseDown($event)" v-if="structure.type === 'endless-loop'" class="hitbox endless-loop-bottom"></div>
+        <div @dragstart.prevent @mousedown="mouseDown($event, 'into')" v-if="structure.type === 'do-while'" class="hitbox do-while-top" :class="{'full-size': structure.children.length == 0}"></div>
+        <div @dragstart.prevent @mousedown="mouseDown($event, 'below')" v-if="structure.type === 'do-while'" class="hitbox do-while-bottom"></div>
+
+        <div @dragstart.prevent @mousedown="mouseDown($event, 'into')" v-if="structure.type === 'endless-loop'" class="hitbox endless-loop-top"></div>
+        <div @dragstart.prevent @mousedown="mouseDown($event, 'below')" v-if="structure.type === 'endless-loop'" class="hitbox endless-loop-bottom"></div>
     </div>
 </template>
 
@@ -48,12 +60,9 @@
             },
             trace: {}
         },
-        mounted() {
-            console.log(this.trace)
-        },
         methods: {
-            mouseDown(event) {
-                EventBus.$emit('toggle-create-element', event)
+            mouseDown(event, position) {
+                EventBus.$emit('toggle-create-element', {event, trace: this.trace, position})
             }
         },
         components: {
@@ -96,6 +105,10 @@
         &.while-bottom
             width: 20px
 
+        &.slot
+            width: 100%
+            top: 5px
+
         &.while-top
             left: 20px
             top: calc(var(--eh) - var(--hh) / 2)
@@ -107,7 +120,9 @@
             width: 20px
 
             &.full-size
-                width: 100%
+                width: calc(100% - 20px)
+                left: 20px
+                top: -15px
 
         &.endless-loop-top
             left: 20px
@@ -128,15 +143,6 @@
         color: black
         border: 1px solid black
         background: white
-    
-        .add-btn
-            position: absolute
-            top: 20px
-            left: 50%
-            transform: translateX(-50%)
-            pointer-events: none
-            opacity: 0
-            z-index: 1
 
         .content
             font-size: 15px
@@ -146,6 +152,36 @@
             min-width: 300px
             text-align: center
             display: block
+
+        .condition-container
+            display: flex
+            min-height: var(--eh)
+            width: 100%
+            margin-right: -1px
+            margin-bottom: -1px
+            margin-top: -20px
+
+            .condition-slot
+                flex: 1
+                min-height: var(--eh)
+                margin-right: -1px
+                position: relative
+
+                .label
+                    height: 20px
+                    line-height: 20px
+                    padding-left: 5px
+                    width: 100%
+                    font-size: 14px
+                    color: black
+                    text-align: left
+
+                &:first-of-type
+                    margin-left: -1px
+
+                &:last-of-type > .label
+                    text-align: right
+                    padding-right: 5px
 
         .loop-container
             display: block
@@ -171,7 +207,12 @@
             z-index: 1
             padding: 2px 10px
 
-        &.if
+        &.switch > .content
+            position: relative
+            z-index: 1
+            padding: 2px 10px
+
+        &.if, &.switch
             .if-path
                 height: var(--eh)
                 width: 100%
@@ -184,13 +225,6 @@
 
                 polyline
                     fill: white
-
-            .item-align
-
-                .if-container
-                    min-height: 40px
-                    min-width: 60px
-                    vertical-align: top
 
         &.call
             .content
