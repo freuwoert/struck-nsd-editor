@@ -18,29 +18,6 @@ export default class TabStruct {
                     type: 'command',
                     content: 'command'
                 },
-                {
-                    type: 'call',
-                    content: 'call()'
-                },
-                {
-                    type: 'break',
-                    content: 'break'
-                },
-                {
-                    type: 'while',
-                    content: 'while',
-                    children: []
-                },
-                {
-                    type: 'endless-loop',
-                    content: 'endless-loop',
-                    children: []
-                },
-                {
-                    type: 'do-while',
-                    content: 'do-while',
-                    children: []
-                },
             ]
         }
 
