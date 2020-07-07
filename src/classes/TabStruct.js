@@ -15,9 +15,10 @@ export default class TabStruct {
         this.structures = {
             children: [
                 {
-                    type: 'command',
-                    content: 'command test'
-                },
+                    type: 'endless-loop',
+                    content: 'main()',
+                    children: [],
+                }
             ]
         }
 
@@ -25,7 +26,7 @@ export default class TabStruct {
         if( this.UUID )
         {
             this.ui.view = 'LANDING'
-            this.meta.name = 'Untitled NSD'
+            this.meta.name = 'Untitled'
             this.meta.isGhost = false
         }
     }

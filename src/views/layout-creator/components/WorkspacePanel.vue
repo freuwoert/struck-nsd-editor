@@ -7,6 +7,8 @@
             <div class="structure-container">
                 <div @dragstart.prevent @mousedown="mouseDown($event)" class="hitbox first"></div>
                 <structure v-for="(child, i) in docStructures.children" :key="i" :trace="'N:'+i" :structure="child"></structure>
+
+                <div class="placeholder" v-show="docStructures.children.length == 0"></div>
             </div>
         </div>
     </div>

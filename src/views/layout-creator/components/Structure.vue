@@ -6,10 +6,14 @@
             <div @dragstart.prevent @mousedown="mouseDown($event, 'below')" class="hitbox"></div>
         </div>
 
+
+
         <div class="call" v-if="structure.type === 'call'">
             <div class="content">{{structure.content}}</div>
             <div @dragstart.prevent @mousedown="mouseDown($event, 'below')" class="hitbox"></div>
         </div>
+
+
 
         <div class="break" v-if="structure.type === 'break'">
             <div class="content">{{structure.content}}</div>
@@ -20,6 +24,8 @@
 
             <div @dragstart.prevent @mousedown="mouseDown($event, 'below')" class="hitbox"></div>
         </div>
+
+
 
         <div class="while" v-if="structure.type === 'while'">
             <div class="content-container">
@@ -34,6 +40,8 @@
 
             <div @dragstart.prevent @mousedown="mouseDown($event, 'below')" class="hitbox hitbox-bottom"></div>
         </div>
+
+
 
         <div class="do-while" v-if="structure.type === 'do-while'">
             <div class="loop-container">
@@ -51,28 +59,69 @@
 
 
 
-        <div v-if="structure.type === 'endless-loop'" class="loop-container">
-            <structure v-for="(child, i) in structure.children" :key="i" :trace="trace+'-N:'+i" :structure="child"></structure>
-            <div class="placeholder" v-show="structure.children.length == 0"></div>
-        </div>
-
-        <div v-if="structure.type === 'if' || structure.type === 'switch'" class="condition-container">
-            <div class="condition-slot" v-for="(slot, i) in structure.slots" :key="i">
-                <div class="label">{{slot.content}}</div>
-
-                <structure v-for="(child, j) in slot.children" :key="j" :trace="trace+'-'+i+':'+j" :structure="child"></structure>
-                <div class="placeholder" v-show="slot.children == 0"></div>
-
-                <div @dragstart.prevent @mousedown="mouseDown($event, 'into', trace+'-'+i+':N')" class="hitbox slot"></div>
+        <div class="endless-loop" v-if="structure.type === 'endless-loop'">
+            <div class="content-container">
+                <div class="content">{{structure.content}}</div>
             </div>
+
+            <div class="loop-container">
+                <div @dragstart.prevent @mousedown="mouseDown($event, 'into')" class="hitbox hitbox-top"></div>
+                <structure v-for="(child, i) in structure.children" :key="i" :trace="trace+'-N:'+i" :structure="child"></structure>
+                <div class="placeholder" v-show="structure.children.length == 0"></div>
+            </div>
+
+            <div @dragstart.prevent @mousedown="mouseDown($event, 'below')" class="hitbox hitbox-bottom"></div>
         </div>
 
-        <svg class="condition-path" v-if="structure.type === 'if' || structure.type === 'switch'" preserveAspectRatio="none" viewBox="0 0 400 40">
-            <polyline points="0 0 200 40 400 0"></polyline>
-        </svg>
 
-        <div @dragstart.prevent @mousedown="mouseDown($event, 'into')" v-if="structure.type === 'endless-loop'" class="hitbox endless-loop-top"></div>
-        <div @dragstart.prevent @mousedown="mouseDown($event, 'below')" v-if="structure.type === 'endless-loop'" class="hitbox endless-loop-bottom"></div>
+
+        <div class="if" v-if="structure.type === 'if'">
+            <div class="content-container">
+                <div class="content">{{structure.content}}</div>
+            </div>
+
+            <div class="condition-container">
+                <div class="condition-slot" v-for="(slot, i) in structure.slots" :key="i">
+                    <div class="label">{{slot.content}}</div>
+
+                    <structure v-for="(child, j) in slot.children" :key="j" :trace="trace+'-'+i+':'+j" :structure="child"></structure>
+                    <div class="placeholder" v-show="slot.children.length == 0"></div>
+
+                    <div @dragstart.prevent @mousedown="mouseDown($event, 'into', trace+'-'+i+':N')" class="hitbox hitbox-top"></div>
+                </div>
+            </div>
+
+            <svg class="condition-path" preserveAspectRatio="none" viewBox="0 0 400 40">
+                <polyline points="0 0 200 40 400 0"></polyline>
+            </svg>
+
+            <div @dragstart.prevent @mousedown="mouseDown($event, 'below')" class="hitbox hitbox-bottom"></div>
+        </div>
+
+
+
+        <div class="switch" v-if="structure.type === 'switch'">
+            <div class="content-container">
+                <div class="content">{{structure.content}}</div>
+            </div>
+
+            <div class="condition-container">
+                <div class="condition-slot" v-for="(slot, i) in structure.slots" :key="i">
+                    <div class="label">{{slot.content}}</div>
+
+                    <structure v-for="(child, j) in slot.children" :key="j" :trace="trace+'-'+i+':'+j" :structure="child"></structure>
+                    <div class="placeholder" v-show="slot.children.length == 0"></div>
+
+                    <div @dragstart.prevent @mousedown="mouseDown($event, 'into', trace+'-'+i+':N')" class="hitbox hitbox-top"></div>
+                </div>
+            </div>
+
+            <svg class="condition-path" preserveAspectRatio="none" viewBox="0 0 400 40">
+                <polyline points="0 0 200 40 400 0"></polyline>
+            </svg>
+
+            <div @dragstart.prevent @mousedown="mouseDown($event, 'below')" class="hitbox hitbox-bottom"></div>
+        </div>
     </div>
 </template>
 
@@ -107,10 +156,12 @@
         background-position: top center
         height: 50px
         width: 100%
+        min-width: 50px
         border: 1px solid black
+        margin-bottom: -1px
 
     .hitbox
-        background: #0057ff55
+        background: #2d98da77
         border-radius: 5px
         width: 0
         height: var(--hh)
@@ -163,7 +214,7 @@
             &::before
                 content: ''
                 position: absolute
-                left: 19px
+                left: 18px
                 top: -1px
                 height: calc(100% + 2px)
                 border-right: 1px solid black
@@ -171,7 +222,7 @@
             &::after
                 content: ''
                 position: absolute
-                right: 19px
+                right: 18px
                 top: -1px
                 height: calc(100% + 2px)
                 border-left: 1px solid black
@@ -190,13 +241,13 @@
             position: relative
 
             .break-path
-                height: calc(100% + 2px)
-                width: 20px
+                height: calc(100% + 0px)
+                width: 19px
                 position: absolute
-                top: -1px
-                left: -0.5px
+                top: -0px
+                left: -0.8px
                 stroke: #000
-                stroke-width: 0.8px
+                stroke-width: 0.7px
                 fill: none
 
             .hitbox
@@ -220,8 +271,10 @@
                 width: calc(100% - 17px)
                 margin-left: 17px
                 position: relative
+                margin-top: -1px
                 bottom: -1px
                 right: -1px
+                padding-bottom: 1px
 
                 > .hitbox-top
                     top: -15px
@@ -242,6 +295,7 @@
                 min-width: 200px
                 width: 100%
                 text-align: center
+                margin-top: -1px // Somehow margin-bottom -1px doesnt work on loop-contianer
 
             > .loop-container
                 min-height: 50px
@@ -250,6 +304,7 @@
                 position: relative
                 top: -1px
                 right: -1px
+                padding-bottom: 1px
 
                 > .hitbox-top
                     top: 0px
@@ -259,67 +314,52 @@
             > .hitbox-bottom
                 width: 100%
 
-        .command,
-        .call,
-        .break,
-        .while,
-        .do-while
-            .content
-                font-size: 15px
-                line-height: 20px
-                text-align: center
-                cursor: text
-                padding: 2px
-                border-radius: 2px
-
-                &:hover
-                    background: #0057ff55
-
-        .condition-container
-            display: flex
-            min-height: var(--eh)
+        .endless-loop
             width: 100%
-            margin-right: -1px
-            margin-bottom: -1px
-            margin-top: -40px
+            background: white
+            color: black
+            border: 1px solid black
+            position: relative
+            padding-bottom: 48px
 
-            .condition-slot
-                min-width: 100px
-                min-height: var(--eh)
-                margin-right: -1px
+            > .content-container
+                padding: 12px 10px
+                min-width: 200px
+                width: 100%
+                text-align: center
+
+            > .loop-container
+                min-height: 50px
+                width: calc(100% - 17px)
+                margin-left: 17px
                 position: relative
+                right: -1px
+                padding-bottom: 1px
 
-                .label
-                    height: 40px
-                    padding-top: 20px
-                    line-height: 20px
-                    padding-left: 5px
+                > .hitbox-top
+                    top: -15px
                     width: 100%
-                    font-size: 14px
-                    color: black
-                    text-align: left
-                    border-right: 1px solid black
 
-                &:first-of-type
-                    margin-left: -1px
+            > .hitbox-bottom
+                width: 100%
 
-                &:last-of-type > .label
-                    text-align: right
-                    padding-right: 5px
-
-        &.if > .content
+        .if
+            width: 100%
+            background: white
+            color: black
+            border: 1px solid black
             position: relative
-            z-index: 1
-            padding: 2px 10px
 
-        &.switch > .content
-            position: relative
-            z-index: 1
-            padding: 2px 10px
+            > .content-container
+                padding: 0px 10px
+                min-width: 200px
+                width: 100%
+                text-align: center
+                position: relative
+                z-index: 1
 
-        &.if, &.switch
-            .condition-path
-                height: var(--eh)
+            > .condition-path
+                height: 47px
                 width: 100%
                 position: absolute
                 top: 0
@@ -327,10 +367,134 @@
                 stroke: #000
                 stroke-width: 0.8px
                 fill: none
+                pointer-events: none
 
                 polyline
                     fill: white
 
-        &.endless-loop
-            padding-bottom: calc(var(--eh) - 1px)
+            > .condition-container
+                display: flex
+                min-height: 50px
+                width: calc(100% + 2px)
+                margin: -1px
+
+                .condition-slot
+                    flex: 1
+                    position: relative
+                    padding-bottom: 1px
+
+                    > .hitbox-top
+                        top: 24px
+                        height: 20px
+                        width: 100%
+
+                    .label
+                        line-height: 20px
+                        font-size: 14px
+                        color: black
+                        float: left
+                        cursor: text
+                        padding: 2px 4px
+                        border-radius: 3px
+
+                        &:hover
+                            background: #1dd1a199
+
+                    &:last-of-type > .label
+                        float: right
+
+                    &:not(:last-of-type)
+                        margin-right: -1px
+
+            > .hitbox-bottom
+                width: 100%
+                height: 20px
+                bottom: -20px
+
+        .switch
+            width: 100%
+            background: white
+            color: black
+            border: 1px solid black
+            position: relative
+
+            > .content-container
+                padding: 0px 10px
+                min-width: 200px
+                width: 100%
+                text-align: center
+                position: relative
+                z-index: 1
+
+            > .condition-path
+                height: 47px
+                width: 100%
+                position: absolute
+                top: 0
+                left: 0
+                stroke: #000
+                stroke-width: 0.8px
+                fill: none
+                pointer-events: none
+
+                polyline
+                    fill: white
+
+            > .condition-container
+                display: flex
+                min-height: 50px
+                width: calc(100% + 2px)
+                margin: -1px
+
+                .condition-slot
+                    flex: 1
+                    position: relative
+                    padding-bottom: 1px
+
+                    > .hitbox-top
+                        top: 24px
+                        height: 20px
+                        width: 100%
+
+                    .label
+                        line-height: 20px
+                        font-size: 14px
+                        color: black
+                        float: left
+                        cursor: text
+                        padding: 2px 4px
+                        border-radius: 3px
+
+                        &:hover
+                            background: #1dd1a199
+
+                    &:last-of-type > .label
+                        float: right
+
+                    &:not(:last-of-type)
+                        margin-right: -1px
+
+            > .hitbox-bottom
+                width: 100%
+                height: 20px
+                bottom: -20px
+
+        .command,
+        .call,
+        .break,
+        .while,
+        .do-while,
+        .endless-loop,
+        .switch,
+        .if
+            .content
+                font-size: 15px
+                line-height: 20px
+                text-align: center
+                cursor: text
+                padding: 2px 4px
+                border-radius: 3px
+
+                &:hover
+                    background: #1dd1a199
 </style>

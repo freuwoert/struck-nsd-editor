@@ -523,7 +523,7 @@ const mutations = {
         layers = param.trace.split('-')
         
         // Get inject position if element shall be inserted below
-        if( param.position === 'below' )
+        if( ['below', 'above'].includes(param.position) )
         {
             injectPosition = layers.pop()
         }
@@ -544,7 +544,7 @@ const mutations = {
             }
         }
 
-        if( param.position === 'below' )
+        if( ['below', 'above'].includes(param.position) )
         {
             injectPosition = injectPosition.split(':')
     
@@ -578,6 +578,12 @@ const mutations = {
         else if(param.position === 'below')
         {
             location.children.splice(injectPosition+1, 0, JSON.parse(JSON.stringify(param.element)))
+        }
+
+        // Inject routine if inserted above element
+        else if(param.position === 'above')
+        {
+            location.children.splice(injectPosition, 0, JSON.parse(JSON.stringify(param.element)))
         }
     },
 
