@@ -16,7 +16,7 @@ export default class TabStruct {
             children: [
                 {
                     type: 'command',
-                    content: 'command'
+                    content: 'command test'
                 },
             ]
         }
