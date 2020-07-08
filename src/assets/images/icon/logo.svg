@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="500" height="500" viewBox="0 0 500 500">
+  <defs>
+    <clipPath id="clip-logo">
+      <rect width="500" height="500"/>
+    </clipPath>
+  </defs>
+  <g id="logo" clip-path="url(#clip-logo)">
+    <circle id="Ellipse_1" data-name="Ellipse 1" cx="250" cy="250" r="250" fill="#2d98da"/>
+    <g id="Gruppe_1" data-name="Gruppe 1" transform="translate(17.555 100.8)">
+      <path id="Pfad_1" data-name="Pfad 1" d="M35.319,0H264.89L229.571,79.467H0Z" transform="translate(100 30)" fill="#fff"/>
+      <path id="Pfad_2" data-name="Pfad 2" d="M35.319,0H264.89L229.571,79.467H0Z" transform="translate(100 188.934)" fill="#fff" opacity="0.6"/>
+      <path id="Pfad_3" data-name="Pfad 3" d="M0,0H229.571L264.89,79.467H35.319Z" transform="translate(100 109.467)" fill="#fff" opacity="0.8"/>
+    </g>
+  </g>
+</svg>

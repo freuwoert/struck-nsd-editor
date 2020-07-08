@@ -2,21 +2,21 @@
     <div class="structure">
 
         <div class="command" v-if="structure.type === 'command'">
-            <div class="content">{{structure.content}}</div>
+            <div class="content" @blur="blur($event)" contenteditable="true">{{structure.content}}</div>
             <div @dragstart.prevent @mousedown="mouseDown($event, 'below')" class="hitbox"></div>
         </div>
 
 
 
         <div class="call" v-if="structure.type === 'call'">
-            <div class="content">{{structure.content}}</div>
+            <div class="content" @blur="blur($event)" contenteditable="true">{{structure.content}}</div>
             <div @dragstart.prevent @mousedown="mouseDown($event, 'below')" class="hitbox"></div>
         </div>
 
 
 
         <div class="break" v-if="structure.type === 'break'">
-            <div class="content">{{structure.content}}</div>
+            <div class="content" @blur="blur($event)" contenteditable="true">{{structure.content}}</div>
 
             <svg class="break-path" preserveAspectRatio="none" viewBox="0 0 20 48">
                 <polyline points="20 0 0 24 20 48"></polyline>
@@ -29,7 +29,7 @@
 
         <div class="while" v-if="structure.type === 'while'">
             <div class="content-container">
-                <div class="content">{{structure.content}}</div>
+                <div class="content" @blur="blur($event)" contenteditable="true">{{structure.content}}</div>
             </div>
 
             <div class="loop-container">
@@ -51,7 +51,7 @@
             </div>
 
             <div class="content-container">
-                <div class="content">{{structure.content}}</div>
+                <div class="content" @blur="blur($event)" contenteditable="true">{{structure.content}}</div>
             </div>
 
             <div @dragstart.prevent @mousedown="mouseDown($event, 'below')" class="hitbox hitbox-bottom"></div>
@@ -61,7 +61,7 @@
 
         <div class="endless-loop" v-if="structure.type === 'endless-loop'">
             <div class="content-container">
-                <div class="content">{{structure.content}}</div>
+                <div class="content" @blur="blur($event)" contenteditable="true">{{structure.content}}</div>
             </div>
 
             <div class="loop-container">
@@ -77,12 +77,12 @@
 
         <div class="if" v-if="structure.type === 'if'">
             <div class="content-container">
-                <div class="content">{{structure.content}}</div>
+                <div class="content" @blur="blur($event)" contenteditable="true">{{structure.content}}</div>
             </div>
 
             <div class="condition-container">
                 <div class="condition-slot" v-for="(slot, i) in structure.slots" :key="i">
-                    <div class="label">{{slot.content}}</div>
+                    <div class="label" @blur="blur($event)" contenteditable="true">{{slot.content}}</div>
 
                     <structure v-for="(child, j) in slot.children" :key="j" :trace="trace+'-'+i+':'+j" :structure="child"></structure>
                     <div class="placeholder" v-show="slot.children.length == 0"></div>
@@ -102,12 +102,12 @@
 
         <div class="switch" v-if="structure.type === 'switch'">
             <div class="content-container">
-                <div class="content">{{structure.content}}</div>
+                <div class="content" @blur="blur($event)" contenteditable="true">{{structure.content}}</div>
             </div>
 
             <div class="condition-container">
                 <div class="condition-slot" v-for="(slot, i) in structure.slots" :key="i">
-                    <div class="label">{{slot.content}}</div>
+                    <div class="label" @blur="blur($event)" contenteditable="true">{{slot.content}}</div>
 
                     <structure v-for="(child, j) in slot.children" :key="j" :trace="trace+'-'+i+':'+j" :structure="child"></structure>
                     <div class="placeholder" v-show="slot.children.length == 0"></div>
@@ -141,6 +141,13 @@
         methods: {
             mouseDown(event, position, trace = this.trace) {
                 EventBus.$emit('toggle-create-element', {event, trace, position})
+            },
+
+            blur(event) {
+                if(event)
+                {
+                    console.log(event.target.innerText)
+                }
             }
         },
         components: {
