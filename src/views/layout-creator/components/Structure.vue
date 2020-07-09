@@ -82,7 +82,7 @@
 
             <div class="condition-container">
                 <div class="condition-slot" v-for="(slot, i) in structure.slots" :key="i">
-                    <div class="label" @blur="blur($event)" contenteditable="true">{{slot.content}}</div>
+                    <div class="label" @blur="blur($event, trace+'-'+i+':N')" contenteditable="true">{{slot.content}}</div>
 
                     <structure v-for="(child, j) in slot.children" :key="j" :trace="trace+'-'+i+':'+j" :structure="child"></structure>
                     <div class="placeholder" v-show="slot.children.length == 0"></div>
@@ -107,7 +107,7 @@
 
             <div class="condition-container">
                 <div class="condition-slot" v-for="(slot, i) in structure.slots" :key="i">
-                    <div class="label" @blur="blur($event)" contenteditable="true">{{slot.content}}</div>
+                    <div class="label" @blur="blur($event, trace+'-'+i+':N')" contenteditable="true">{{slot.content}}</div>
 
                     <structure v-for="(child, j) in slot.children" :key="j" :trace="trace+'-'+i+':'+j" :structure="child"></structure>
                     <div class="placeholder" v-show="slot.children.length == 0"></div>
@@ -128,6 +128,7 @@
 <script>
     import StructureInput from '../../components/StructureInput'
     import { EventBus } from '../../../assets/js/event-bus.js'
+    import { mapGetters, mapActions } from 'vuex'
 
     export default {
         name: 'structure',
@@ -139,14 +140,18 @@
             trace: {}
         },
         methods: {
+            ...mapActions([
+                'setContent'
+            ]),
+
             mouseDown(event, position, trace = this.trace) {
                 EventBus.$emit('toggle-create-element', {event, trace, position})
             },
 
-            blur(event) {
+            blur(event, trace = this.trace) {
                 if(event)
                 {
-                    console.log(event.target.innerText)
+                    this.setContent({trace, content: event.target.innerText})
                 }
             }
         },
@@ -171,9 +176,9 @@
         background: #2d98da77
         border-radius: 5px
         width: 0
-        height: var(--hh)
+        height: 30px
         position: absolute
-        bottom: calc(var(--hh) / 2 * -1)
+        bottom: -15px
         left: 0
         z-index: 10
         opacity: 0
@@ -184,7 +189,7 @@
             opacity: 1
 
         &.first
-            height: var(--hh)
+            height: 30px
             left: 15px
             top: 0
             width: calc(100% - 30px)
@@ -274,8 +279,8 @@
                 text-align: center
 
             > .loop-container
+                display: block
                 min-height: 50px
-                width: calc(100% - 17px)
                 margin-left: 17px
                 position: relative
                 margin-top: -1px
@@ -305,8 +310,8 @@
                 margin-top: -1px // Somehow margin-bottom -1px doesnt work on loop-contianer
 
             > .loop-container
+                display: block
                 min-height: 50px
-                width: calc(100% - 17px)
                 margin-left: 17px
                 position: relative
                 top: -1px
@@ -337,7 +342,7 @@
 
             > .loop-container
                 min-height: 50px
-                width: calc(100% - 17px)
+                display: block
                 margin-left: 17px
                 position: relative
                 right: -1px

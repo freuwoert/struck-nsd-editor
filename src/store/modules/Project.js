@@ -304,8 +304,8 @@ const actions = {
 
     createElement({ commit, state, getters }, payload) {
         
-        let path = 'state.document.structures'
-        let layers = null
+        // let path = 'state.document.structures'
+        // let layers = null
 
 
 
@@ -317,6 +317,10 @@ const actions = {
 
         // Checks for element
         if( !payload.element ) return
+
+
+
+        // TODO: check if trace is traversable
 
 
 
@@ -335,59 +339,34 @@ const actions = {
     },
 
     deleteStructures({ commit, state, getters }, payload) {
-        for (let trace of payload.traces)
-        {
-            let path = state.document.structures
-            let isValid = true
-
-            // String to array
-            trace = trace.split('-')
-
-            // check if trace is traverable
-            for (const i of trace)
-            {
-                if( path.children && path.children[parseInt(i)] )
-                {
-                    path = path.children[parseInt(i)]
-                }
-                else
-                {
-                    isValid = false
-                    break
-                }
-            }
-        }
+        
     },
 
-    setProperty({ commit, getters }, payload) {
+    setContent({ commit, getters }, payload) {
 
-        let reformTrace = (trace) => {
+        // let path = 'state.document.structures'
+        // let layers = null
 
-            trace = trace.toString()
-            trace = trace.split('-')
 
-            for (let i = 0; i < trace.length; i++)
-            {
-                trace[i] = parseInt(trace[i])
-            }
 
-            return trace
-        }
+        // Checks for trace
+        if( !payload.trace ) return
 
+        // Checks for content
+        if( !payload.content ) return
+
+
+
+        // TODO: check if trace is traversable
         
 
-        if( payload.hasOwnProperty('text') )
-        {
-            for (const trace of payload.selectedStructures)
-            {
-                commit('setPropertyText_', { trace: reformTrace(trace), text: payload.text })
-            }
-
-            commit('setChanged_', true)
-            commit('setBackgroundChanged_', {index: getters.activeIndex , changed: true})
-        }
-
         
+        // commit('setChanged_', true)
+        // commit('setBackgroundChanged_', {index: getters.activeIndex , changed: true})
+        commit('setContent_', {
+            trace: payload.trace,
+            content: payload.content
+        })
     },
 
     setSelectedStructures({ commit, state }, payload) {
@@ -568,7 +547,6 @@ const mutations = {
         location = eval(path)
 
         // Inject routine if inserted in element
-        // TODO: needs check for closed tags
         if(param.position === 'into')
         {
             location.children.unshift(JSON.parse(JSON.stringify(param.element)))
@@ -587,21 +565,35 @@ const mutations = {
         }
     },
 
-    setPropertyText_: (state, param) => {
-
+    setContent_: (state, param) => {
+        let layers = []
         let path = 'state.document.structures'
-        let structure = null
+        let location = null
 
-        for (const i of param.trace) {
-            path += '.children['+i+']'
-        }
+        
+        // Trace to layers
+        layers = param.trace.split('-')
 
-        structure = eval(path)
-
-        if( structure && structure.hasOwnProperty('text') )
+        // check if trace is traverable
+        for (let layer of layers)
         {
-            structure.text = param.text
+            layer = layer.split(':')
+            
+            if( layer[0] !== 'N' )
+            {
+                path += `.slots[${layer[0]}]`
+            }
+
+            if( layer[1] !== 'N' )
+            {
+                path += `.children[${layer[1]}]`
+            }
         }
+
+        // Evaluate it
+        location = eval(path)
+        
+        location.content = JSON.parse(JSON.stringify(param.content))
     },
 
     selectStructures_: (state, param) => {
@@ -642,21 +634,6 @@ const mutations = {
 
     setSavePath_: (state, param) => {
         state.document.meta.savePath = param
-    },
-
-    setViewportSize_: (state, param) => {
-        if(param.x) state.document.viewport.x = parseInt(param.x)
-        if(param.y) state.document.viewport.y = parseInt(param.y)
-    },
-
-    rotateCoupledViewport_: (state) => {
-        let x = JSON.parse(JSON.stringify(state.document.viewport.x))
-        state.document.viewport.x = JSON.parse(JSON.stringify(state.document.viewport.y))
-        state.document.viewport.y = x
-    },
-
-    toggleDecoupleViewport_: (state) => {
-        state.document.viewport.decoupled = !state.document.viewport.decoupled
     },
 
     setChanged_: (state, param) => {

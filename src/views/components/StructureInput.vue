@@ -181,7 +181,7 @@
             text-transform: uppercase
 
             &.selected
-                color: var(--blue)
+                color: var(--primary)
                 font-size: 11px
                 font-weight: 800
 

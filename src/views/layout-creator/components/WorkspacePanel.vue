@@ -88,13 +88,11 @@
             user-select: none
 
             .structure-container
-                min-width: 300px
+                min-width: 200px
                 min-height: 60px
                 padding: 15px
                 border-radius: 7px
                 background: var(--background)
                 font-family: 'Roboto Mono', monospace
                 position: relative
-                --eh: 46px
-                --hh: 30px
 </style>
