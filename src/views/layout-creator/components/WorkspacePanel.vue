@@ -17,7 +17,6 @@
 </template>
 <script>
     import { mapGetters, mapActions } from 'vuex'
-    import DragUnit from '../../components/DragUnitInput'
     import StructureInput from '../../components/StructureInput'
     import { EventBus } from '../../../assets/js/event-bus.js'
     import Colorpicker from '../../components/Colorpicker'
@@ -39,7 +38,6 @@
             }
         },
         components: {
-            DragUnit,
             Colorpicker,
             Structure,
             StructureInput,
@@ -74,7 +72,6 @@
                 line-height: 18px
                 font-size: 18px
                 vertical-align: top
-                opacity: 0.7
 
         .center
             position: absolute

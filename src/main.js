@@ -48,8 +48,11 @@ const app = new Vue({
 
 Mousetrap.bind(['ctrl+n','command+n'],             function(){ EventBus.$emit('new') })
 Mousetrap.bind(['ctrl+o','command+o'],             function(){ EventBus.$emit('open') })
+Mousetrap.bind(['ctrl+e','command+e'],             function(){ EventBus.$emit('export') })
 Mousetrap.bind(['ctrl+s','command+s'],             function(){ EventBus.$emit('save') })
 Mousetrap.bind(['ctrl+shift+s','command+shift+s'], function(){ EventBus.$emit('save-as') })
+Mousetrap.bind(['ctrl+shift+e','command+shift+e'], function(){ EventBus.$emit('settings') })
+Mousetrap.bind(['ctrl+shift+m','command+shift+m'], function(){ EventBus.$emit('menu') })
 Mousetrap.bind(['del','backspace'],                function(){ EventBus.$emit('delete') })
 
 

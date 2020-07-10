@@ -1,46 +1,50 @@
 <template>
     <div class="option-panel">
-        <div class="more" title="Menü" @click="toggleMoreMenu()">&#983900;</div>
+        <div class="more" title="Menü     STRG + UMSCHALT + M" @click="toggleMoreMenu()">&#983900;</div>
 
         <div class="controls">
-            <div class="control-icon-btn" title="rückgängig machen">&#984396;</div>
-            <div class="control-icon-btn disabled" title="wiederherstellen">&#984142;</div>
-            <div class="control-icon-btn disabled" title="Auswahl löschen">&#985722;</div>
-            <!-- <div class="control-icon-btn">&#984813;</div>
-            <div class="control-icon-btn">&#984812;</div> -->
+            <div class="control-icon-btn" title="Rückgängig machen     STRG + Z">&#984396;</div>
+            <div class="control-icon-btn" title="Wiederherstellen     STRG + Y">&#984142;</div>
+            <div class="control-icon-btn" title="Auswahl löschen     ENTF">&#985722;</div>
         </div>
 
         <div class="more-menu" :class="{'active': moreMenu}">
-            <div class="option">
+            <div class="option" @click="emit('new')">
                 <div class="text">Neu</div>
                 <div class="shortcut">STRG + N</div>
             </div>
-            <div class="option">
+            <div class="option" @click="emit('open')">
                 <div class="text">Öffnen</div>
                 <div class="shortcut">STRG + O</div>
             </div>
+
             <div class="divider"></div>
-            <div class="option">
+
+            <div class="option" @click="emit('save')">
                 <div class="text">Speichern</div>
                 <div class="shortcut">STRG + S</div>
             </div>
-            <div class="option">
+            <div class="option" @click="emit('save-as')">
                 <div class="text">Speichern als</div>
                 <div class="shortcut">STRG + UMSCHALT + S</div>
             </div>
+
             <div class="divider"></div>
-            <div class="option">
+
+            <div class="option" @click="emit('export')">
                 <div class="text">Exportieren</div>
                 <div class="shortcut">STRG + E</div>
             </div>
-            <div class="option" @click="setSettingsUI(true)">
+            <div class="option" @click="emit('settings')">
                 <div class="text">Einstellungen</div>
+                <div class="shortcut">STRG + UMSCHALT + E</div>
             </div>
         </div>
     </div>
 </template>
 <script>
     import { mapGetters, mapActions } from 'vuex'
+    import { EventBus } from '../../../assets/js/event-bus.js'
 
     export default {
         data() {
@@ -48,23 +52,20 @@
                 moreMenu: false
             }
         },
-        computed: {
-            ...mapGetters([
-                'userInfo',
-            ]),
+        mounted() {
+            EventBus.$on('menu', () => {
+                this.toggleMoreMenu()
+            })
         },
         methods: {
-            ...mapActions([
-                'setSettingsUI',
-            ]),
-
             toggleMoreMenu() {
                 this.moreMenu = !this.moreMenu
             },
-        },
-        components: {
 
-        }
+            emit(event) {
+                EventBus.$emit(event)
+            }
+        },
     }
 </script>
 <style lang="sass" scoped>
