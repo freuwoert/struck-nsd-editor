@@ -29,12 +29,16 @@ const app = new Vue({
     methods: {
         ...mapActions([
             'saveFile',
+            'addTab',
         ])
     },
     mounted() {
+        this.addTab({selectOnCreation: true})
+
         EventBus.$on('save', () => {
             this.saveFile()
         })
+
         EventBus.$on('save-as', () => {
             this.saveFile({force: true})
         })

@@ -8,8 +8,8 @@ const cloneDeep = require('lodash.clonedeep')
 const state = {
     activeUUID: null,
     history: [],
-    tabs: [new TabStruct('UUID1').getStruct()],
-    document: new TabStruct().getStruct()
+    tabs: [],
+    document: new TabStruct('STARTER_UUID').getStruct()
 }
 
 const getters = {
@@ -177,8 +177,8 @@ const actions = {
         
 
         
-        // commit('setChanged_', true)
-        // commit('setBackgroundChanged_', {index: getters.activeIndex , changed: true})
+        commit('setChanged_', true)
+        commit('setBackgroundChanged_', {index: getters.activeIndex , changed: true})
         commit('insertStructure_', {
             trace: payload.trace,
             position: payload.position,
@@ -209,8 +209,8 @@ const actions = {
         
 
         
-        // commit('setChanged_', true)
-        // commit('setBackgroundChanged_', {index: getters.activeIndex , changed: true})
+        commit('setChanged_', true)
+        commit('setBackgroundChanged_', {index: getters.activeIndex , changed: true})
         commit('setContent_', {
             trace: payload.trace,
             content: payload.content

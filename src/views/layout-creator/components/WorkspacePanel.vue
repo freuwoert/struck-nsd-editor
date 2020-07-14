@@ -90,6 +90,6 @@
                 padding: 15px
                 border-radius: 7px
                 background: var(--background)
-                font-family: 'Roboto Mono', monospace
+                font-family: 'SCP', monospace
                 position: relative
 </style>

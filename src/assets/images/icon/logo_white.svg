@@ -1,14 +1,1 @@
-<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="500" height="500" viewBox="0 0 500 500">
-  <defs>
-    <clipPath id="clip-logo_white">
-      <rect width="500" height="500"/>
-    </clipPath>
-  </defs>
-  <g id="logo_white" clip-path="url(#clip-logo_white)">
-    <g id="Gruppe_1" data-name="Gruppe 1" transform="translate(-25.293 62.236)">
-      <path id="Pfad_1" data-name="Pfad 1" d="M46.745,0H350.586L303.842,105.176H0Z" transform="translate(100 30)" fill="#fff"/>
-      <path id="Pfad_2" data-name="Pfad 2" d="M46.745,0H350.586L303.842,105.176H0Z" transform="translate(100 240.352)" fill="#fff" opacity="0.6"/>
-      <path id="Pfad_3" data-name="Pfad 3" d="M0,0H303.842l46.745,105.176H46.745Z" transform="translate(100 135.176)" fill="#fff" opacity="0.8"/>
-    </g>
-  </g>
-</svg>
+<svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000"><defs><style>.cls-1{fill:none;}.cls-2,.cls-3,.cls-4{fill:#fff;}.cls-2{opacity:0.4;}.cls-3{opacity:0.7;}</style></defs><rect class="cls-1" width="1000" height="1000"/><path class="cls-2" d="M219.92,608H821a231.18,231.18,0,0,1-7.49,58.35L772.35,824h-601l41.13-157.65A231.18,231.18,0,0,0,219.92,608Z"/><path class="cls-3" d="M780.08,392a231.18,231.18,0,0,0,7.49,58.35l25.9,99.3A231.18,231.18,0,0,1,821,608h-601a231.18,231.18,0,0,0-7.49-58.35l-25.9-99.3A231.18,231.18,0,0,1,179,392Z"/><path class="cls-4" d="M780.08,392H179a231.18,231.18,0,0,1,7.49-58.35L227.65,176H828.7L787.57,333.65A231.18,231.18,0,0,0,780.08,392Z"/></svg>

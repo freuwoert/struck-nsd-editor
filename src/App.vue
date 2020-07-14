@@ -9,7 +9,7 @@
                             <div class="title" @click="selectTab(tab.UUID)">{{tab.name}}</div>
                             <div class="close" @click="deleteTab(tab.UUID)">&#983382;</div>
                         </div>
-                        <div class="add-tab">&#984085;</div>
+                        <div class="create" @click="addTab({selectOnCreation: true})">&#984085;</div>
                     </div>
                 </div>
                 <div class="window-controls">

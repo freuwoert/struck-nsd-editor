@@ -28,7 +28,7 @@ export default class TabStruct {
         if( this.UUID )
         {
             this.ui.view = 'LANDING'
-            this.meta.name = 'Untitled'
+            this.meta.name = 'Unbenannt'
             this.meta.isGhost = false
         }
     }

@@ -2,8 +2,6 @@
 @import 'fonts/_MULI.scss'
 @import 'fonts/_SCP.scss'
 
-@import 'themes/_prism.sass'
-
 
 *
     display: inline-block
@@ -136,7 +134,7 @@ h1,h2,h3,h4,h5,h6
                         max-width: 270px
                         flex: 1
                         padding-right: var(--header-height)
-                        border-radius: 7px
+                        border-radius: 7px 7px 0 0
                         background: transparent
                         line-height: var(--header-height)
                         position: relative
@@ -145,7 +143,7 @@ h1,h2,h3,h4,h5,h6
                         -webkit-app-region: no-drag
 
                         &:hover
-                            background: rgba(255, 255, 255, 0.02)
+                            background: rgba(255, 255, 255, 0.4)
 
                             .close
                                 opacity: 1 !important
@@ -175,14 +173,6 @@ h1,h2,h3,h4,h5,h6
                                 right: -10px
                                 box-shadow: 0 10px var(--background)
 
-                        &.main-tab
-                            margin-right: 15px
-                            margin-left: 0px
-                            border-radius: 0 10px 0 0
-
-                            &:before
-                                display: none
-
                         .change-dot
                             height: 8px
                             width: 8px
@@ -195,17 +185,22 @@ h1,h2,h3,h4,h5,h6
                             transition: border 200ms
 
                             &.active
-                                border: 4px solid var(--color-bright)
+                                border: 4px solid var(--primary)
 
                         .title
-                            color: var(--color)
-                            font-size: 14px
+                            color: var(--color-bright)
+                            line-height: calc(var(--header-height) + 3px)
+                            font-size: 13px
+                            font-weight: 600
                             overflow: hidden
                             width: 100%
                             text-overflow: ellipsis
                             white-space: nowrap
                             padding-left: 30px
                             cursor: pointer
+                            position: absolute
+                            top: 0
+                            left: 0
 
                         .close
                             height: calc(var(--header-height) - 10px)
@@ -217,7 +212,7 @@ h1,h2,h3,h4,h5,h6
                             top: 5px
                             right: 5px
                             border-radius: 100%
-                            font-size: 12px
+                            font-size: 13px
                             font-family: 'Material Icons'
                             cursor: pointer
                             opacity: 0
@@ -234,7 +229,7 @@ h1,h2,h3,h4,h5,h6
                         margin: 3px
                         margin-left: 8px
                         border-radius: 100%
-                        font-size: 16px
+                        font-size: 17px
                         font-family: 'Material Icons'
                         cursor: pointer
                         vertical-align: top
