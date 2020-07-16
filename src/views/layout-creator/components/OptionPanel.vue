@@ -39,6 +39,8 @@
                 <div class="text">Einstellungen</div>
                 <div class="shortcut">STRG + UMSCHALT + E</div>
             </div>
+
+            <div class="copyright"><span>&#984550;</span> Maurice Freuwört</div>
         </div>
     </div>
 </template>
@@ -139,6 +141,28 @@
 
             &.active
                 transform: translateX(0%)
+
+            .copyright
+                font-size: 12px
+                line-height: 18px
+                font-weight: 800
+                letter-spacing: 1px
+                text-transform: uppercase
+                color: #00000040
+                position: fixed
+                bottom: 10px
+                left: 10px
+                z-index: 1000000
+                pointer-events: none
+
+                span
+                    font-family: 'Material Icons'
+                    width: 18px
+                    height: 18px
+                    text-align: center
+                    line-height: 18px
+                    font-size: 18px
+                    vertical-align: top
 
             .divider
                 width: calc(100% - 30px)

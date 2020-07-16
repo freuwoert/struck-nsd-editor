@@ -10,8 +10,6 @@
 
                 <div class="placeholder" v-show="docStructures.children.length == 0"></div>
             </div>
-
-            <div class="copyright"><span>&#984550;</span> Maurice Freuwört</div>
         </div>
     </div>
 </template>
@@ -50,28 +48,6 @@
         background: var(--dark-background)
         overflow: hidden
         position: relative
-
-        .copyright
-            font-size: 12px
-            line-height: 18px
-            font-weight: 800
-            letter-spacing: 1px
-            text-transform: uppercase
-            color: #00000040
-            position: fixed
-            bottom: 10px
-            left: 10px
-            z-index: 1000000
-            pointer-events: none
-
-            span
-                font-family: 'Material Icons'
-                width: 18px
-                height: 18px
-                text-align: center
-                line-height: 18px
-                font-size: 18px
-                vertical-align: top
 
         .center
             position: absolute

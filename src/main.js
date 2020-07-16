@@ -29,11 +29,14 @@ const app = new Vue({
     methods: {
         ...mapActions([
             'saveFile',
+            'openFiles',
             'addTab',
         ])
     },
     mounted() {
         this.addTab({selectOnCreation: true})
+
+        // All events regarding menu options must be put down here
 
         EventBus.$on('save', () => {
             this.saveFile()
@@ -41,6 +44,10 @@ const app = new Vue({
 
         EventBus.$on('save-as', () => {
             this.saveFile({force: true})
+        })
+
+        EventBus.$on('open', () => {
+            this.openFiles({selectOnCreation: true})
         })
     },
     render: h => h(App)

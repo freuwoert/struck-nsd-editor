@@ -278,13 +278,16 @@ const actions = {
             if( isActive ) commit('setSavePath_', savePath)
         }
 
-        try {
+        try
+        {
+            // ToDo: not only the active document
             await fs.writeFile(savePath, JSON.stringify(state.document))
 
             commit('setBackgroundChanged_', {index, changed: false})
             if( isActive ) commit('setChanged_', false)
         }
-        catch(error) {
+        catch(error)
+        {
             console.error(error)
         }
     },
@@ -295,6 +298,41 @@ const actions = {
 
         commit('setBackgroundSavePath_', {index, savePath})
         commit('setSavePath_', savePath)
+    },
+
+    /*
+    *  Payload:
+    *  openPaths: Array
+    *  selectionOnCreation: Boolean
+    */
+    async openFiles({ commit, dispatch }, payload) {
+        
+        let openPaths = payload.openPaths ? payload.openPaths : await Dialog.openDialog()
+
+        for (const openPath of openPaths)
+        {
+            try
+            {
+                let uuid = require('uuid').v4()
+                let content = await fs.readFile(openPath)
+                // let tab = new TabStruct(uuid).getStruct()
+                
+                let tab = JSON.parse(content)
+
+                tab.UUID = uuid
+    
+                commit('addTabs_', [tab])
+    
+                if( payload.selectOnCreation )
+                {
+                    dispatch('selectTab', uuid)
+                }
+            }
+            catch(error) 
+            {
+                console.error(error)
+            }
+        }
     },
 }
 
