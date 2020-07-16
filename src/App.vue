@@ -6,7 +6,7 @@
                     <div class="tab-container">
                         <div class="tab" :key="i" v-for="(tab, i) in tabHandles" :class="{'active' : tab.UUID === activeUUID}">
                             <div class="change-dot" :class="{'active' : tab.changed}"></div>
-                            <div class="title" @click="selectTab(tab.UUID)">{{tab.name}}</div>
+                            <div class="title" :title="tab.name" @click="selectTab(tab.UUID)">{{tab.name}}</div>
                             <div class="close" @click="deleteTab(tab.UUID)">&#983382;</div>
                         </div>
                         <div class="create" @click="addTab({selectOnCreation: true})">&#984085;</div>
@@ -39,6 +39,7 @@
 
         <!-- Overlays / Popups -->
         <settings v-show="settingsUI"></settings>
+        <export v-show="exportUI"></export>
     </div>
 </template>
 
@@ -49,6 +50,7 @@
 <script>
     import { mapGetters, mapActions } from 'vuex'
     import Settings from './views/settings/Settings.vue'
+    import Export from './views/dialogs/Export.vue'
     import ReleaseNotes from './views/dialogs/ReleaseNotes.vue'
     import Spinner from './views/components/Spinner.vue'
 
@@ -59,6 +61,7 @@
             ...mapGetters([
                 'tabHandles',
                 'settingsUI',
+                'exportUI',
                 'view',
                 'activeUUID',
             ]),
@@ -72,6 +75,7 @@
         },
         components: {
             Settings,
+            Export,
             ReleaseNotes,
             Spinner,
 

@@ -38,16 +38,20 @@ const app = new Vue({
 
         // All events regarding menu options must be put down here
 
+        EventBus.$on('new', () => {
+            this.addTab({selectOnCreation: true})
+        })
+
+        EventBus.$on('open', () => {
+            this.openFiles({selectOnCreation: true})
+        })
+
         EventBus.$on('save', () => {
             this.saveFile()
         })
 
         EventBus.$on('save-as', () => {
             this.saveFile({force: true})
-        })
-
-        EventBus.$on('open', () => {
-            this.openFiles({selectOnCreation: true})
         })
     },
     render: h => h(App)

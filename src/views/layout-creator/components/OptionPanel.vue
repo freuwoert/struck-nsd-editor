@@ -1,43 +1,43 @@
 <template>
     <div class="option-panel">
-        <div class="more" title="Menü     STRG + UMSCHALT + M" @click="toggleMoreMenu()">&#983900;</div>
+        <div class="more" title="Menü     Strg + Umschalt + M" @click="toggleMoreMenu()">&#983900;</div>
 
         <div class="controls">
-            <div class="control-icon-btn" title="Rückgängig machen     STRG + Z">&#984396;</div>
-            <div class="control-icon-btn" title="Wiederherstellen     STRG + Y">&#984142;</div>
-            <div class="control-icon-btn" title="Auswahl löschen     ENTF">&#985722;</div>
+            <div class="control-icon-btn" title="Rückgängig machen     Strg + Z">&#984396;</div>
+            <div class="control-icon-btn" title="Wiederherstellen     Strg + Y">&#984142;</div>
+            <div class="control-icon-btn" title="Auswahl löschen     Entf">&#985722;</div>
         </div>
 
         <div class="more-menu" :class="{'active': moreMenu}">
             <div class="option" @click="emit('new')">
                 <div class="text">Neu</div>
-                <div class="shortcut">STRG + N</div>
+                <div class="shortcut">Strg + N</div>
             </div>
             <div class="option" @click="emit('open')">
-                <div class="text">Öffnen</div>
-                <div class="shortcut">STRG + O</div>
+                <div class="text">Öffnen...</div>
+                <div class="shortcut">Strg + O</div>
             </div>
 
             <div class="divider"></div>
 
             <div class="option" @click="emit('save')">
-                <div class="text">Speichern</div>
-                <div class="shortcut">STRG + S</div>
+                <div class="text">Speichern...</div>
+                <div class="shortcut">Strg + S</div>
             </div>
             <div class="option" @click="emit('save-as')">
-                <div class="text">Speichern als</div>
-                <div class="shortcut">STRG + UMSCHALT + S</div>
+                <div class="text">Speichern als...</div>
+                <div class="shortcut">Strg + Umschalt + S</div>
             </div>
 
             <div class="divider"></div>
 
             <div class="option" @click="emit('export')">
-                <div class="text">Exportieren</div>
-                <div class="shortcut">STRG + E</div>
+                <div class="text">Exportieren...</div>
+                <div class="shortcut">Strg + E</div>
             </div>
             <div class="option" @click="emit('settings')">
                 <div class="text">Einstellungen</div>
-                <div class="shortcut">STRG + UMSCHALT + E</div>
+                <div class="shortcut">Strg + Umschalt + E</div>
             </div>
 
             <div class="copyright"><span>&#984550;</span> Maurice Freuwört</div>
@@ -132,7 +132,6 @@
             text-align: left
             height: calc(100% - 75px)
             background: var(--background)
-            border-radius: 0px 7px 0px 0px
             z-index: 2
             margin-bottom: 10px
             padding: 15px 0
@@ -148,7 +147,7 @@
                 font-weight: 800
                 letter-spacing: 1px
                 text-transform: uppercase
-                color: #00000040
+                color: #00000030
                 position: fixed
                 bottom: 10px
                 left: 10px
@@ -163,6 +162,7 @@
                     line-height: 18px
                     font-size: 18px
                     vertical-align: top
+                    margin-right: 5px
 
             .divider
                 width: calc(100% - 30px)

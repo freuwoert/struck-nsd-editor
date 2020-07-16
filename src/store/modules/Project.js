@@ -2,6 +2,7 @@ import { EventBus } from '../../assets/js/event-bus'
 import Dialog from '../../assets/js/dialog'
 import TabStruct from '../../classes/TabStruct'
 import { promises as fs } from 'fs'
+import path from 'path'
 
 const cloneDeep = require('lodash.clonedeep')
 
@@ -359,6 +360,15 @@ const mutations = {
 
     setBackgroundSavePath_: (state, param) => {
         state.tabs[param.index].meta.savePath = param.savePath
+
+        try
+        {
+            state.tabs[param.index].meta.name = path.basename(param.savePath, path.extname(param.savePath))
+        }
+        catch(error)
+        {
+            console.error(error)
+        }
     },
 
     setBackgroundChanged_: (state, param) => {
@@ -520,6 +530,15 @@ const mutations = {
 
     setSavePath_: (state, param) => {
         state.document.meta.savePath = param
+
+        try
+        {
+            state.document.meta.name = path.basename(param, path.extname(param))
+        }
+        catch(error)
+        {
+            console.error(error)
+        }
     },
 
     setChanged_: (state, param) => {
