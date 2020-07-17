@@ -96,9 +96,9 @@
             width: calc(100% - var(--h))
             height: var(--h)
             line-height: var(--h)
-            color: var(--color-bright)
+            color: var(--color)
             font-size: 13px
-            font-weight: 700
+            font-weight: 800
             letter-spacing: 0.5px
             vertical-align: top
             padding-left: 10px
@@ -107,7 +107,7 @@
         .drop-list
             line-height: 30px
             border-radius: 5px
-            background: var(--dark-background)
+            background: var(--background)
             width: 100%
             position: absolute
             bottom: 0
@@ -117,23 +117,24 @@
             overflow-y: auto
             text-align: left
             z-index: 111
+            filter: drop-shadow(0 2px 4px #00000060)
 
             .drop-option
                 height: 30px
                 width: 100%
                 line-height: 30px
                 padding: 0 10px
-                font-size: 12px
+                font-size: 10px
                 letter-spacing: 1px
                 white-space: nowrap
                 overflow: hidden
                 font-weight: 800
-                color: var(--color-bright)
+                color: var(--color)
                 display: block
-                border-left: 2px solid transparent
 
                 &:hover
                     background: var(--color-dimm)
+                    color: var(--primary)
 
                 &:first-of-type
                     border-top-left-radius: 5px
@@ -144,7 +145,7 @@
                     border-bottom-right-radius: 5px
 
                 &.selected
-                    border-color: var(--primary)
-                    color: var(--primary)
+                    color: white
+                    background: var(--primary)
 
 </style>

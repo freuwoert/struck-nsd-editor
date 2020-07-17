@@ -126,11 +126,11 @@
 
         .more-menu
             position: fixed
-            top: 75px
+            top: 73px
             left: 0px
             width: 300px
             text-align: left
-            height: calc(100% - 75px)
+            height: calc(100% - 73px)
             background: var(--background)
             z-index: 2
             margin-bottom: 10px

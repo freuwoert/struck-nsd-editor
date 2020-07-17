@@ -1,13 +1,23 @@
 <template>
     <div class="background">
         <div class="container">
-            <div class="exit" @click="setExportUI(false)">&#983382;</div>
-            <div class="panel">
-                <div class="output-container">
-                    <div class="output">PNG</div>
-                    <div class="output">SVG</div>
-                    <div class="output">TEX</div>
+            <div class="title">Diagramm exportieren</div>
+            <div class="row">
+                <div class="name">Format:</div>
+                <div class="input-container">
+                    <drop-down class="export-method" :options="{'SVG':'SVG','PNG':'PNG','JPG':'JPG','TEX':'TEX'}" v-model="exportMethod"></drop-down>
                 </div>
+            </div>
+            <div class="row">
+                <div class="name">Exportieren nach:</div>
+                <div class="input-container">
+                    <div class="save-path" :title="savePath">{{savePath}}</div>
+                    <div class="text-button">Ändern</div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="ghost-button" @click="setExportUI(false)">Abbrechen</div>
+                <div class="button">Exportieren</div>
             </div>
         </div>
     </div>
@@ -21,13 +31,18 @@
     export default {
         data() {
             return {
-                
+                exportMethod: 'PNG'
             }
         },
         mounted() {
             EventBus.$on('export', () => {
                 this.setExportUI(true)
             })
+        },
+        computed: {
+            ...mapGetters([
+                'savePath',
+            ]),
         },
         methods: {
             ...mapActions([
@@ -51,64 +66,71 @@
         left: 0
 
         .container
-            width: 400px
-            height: 600px
+            width: 500px
             border-radius: 10px
             position: absolute
             top: 50%
             left: 50%
+            padding: 30px
+            padding-bottom: 20px
+            text-align: left
             transform: translate(-50%, -50%)
             background: var(--background)
-        
-            .exit
-                height: 30px
-                width: 30px
-                line-height: 30px
-                position: absolute
-                top: 5px
-                right: 5px
-                user-select: none
-                border-radius: 40px
-                color: var(--color)
-                font-size: 20px
-                font-family: 'Material Icons'
-                cursor: pointer
 
-                &:hover
-                    background: var(--color-dimm)
-                    color: var(--primary)
-
-            .panel
-                position: absolute
-                top: 40px
-                left: 0
+            .title
                 width: 100%
-                height: calc(100% - 40px)
-                border-radius: 0 0 10px 10px
+                line-height: 20px
+                padding-bottom: 5px
+                margin-bottom: 20px
+                border-bottom: 1px solid var(--color-lighter)
+                text-align: left
+                font-size: 14px
+                font-weight: 800
+                letter-spacing: 0.5px
+                color: var(--color-bright)
+                user-select: none
 
-                .output-container
-                    height: 30px
-                    width: calc(100% - 20px)
-                    margin: 0 10px
-                    background: blue
-                    display: flex
-                    border-radius: 15px
-                    background: var(--background)
+            .row
+                margin: 10px 0
+                width: 100%
+                text-align: left
 
-                    .output
-                        height: 100%
-                        flex: 1
-                        border-radius: 15px
-                        text-align: center
+                .button
+                    float: right
+
+                .ghost-button
+                    margin-left: 15px
+                    float: right
+
+                .name
+                    width: 110px
+                    color: var(--color-light)
+                    font-size: 11px
+                    line-height: 20px
+                    padding: 5px 0
+                    font-weight: 500
+                    vertical-align: top
+                    user-select: none
+
+                .input-container
+                    width: calc(100% - 110px)
+                    vertical-align: top
+
+                    .export-method
+                        width: 100px
+                        text-align: left
+                        background: none
+
+                    .save-path
+                        width: 220px
+                        font-size: 12px
                         color: var(--color)
-                        user-select: none
-                        cursor: pointer
-                        line-height: 30px
-                        font-size: 14px
                         font-weight: 700
+                        line-height: 30px
                         vertical-align: top
-
-                        &:hover
-                            background: var(--dark-background)
-                            color: var(--primary)
+                        overflow: hidden
+                        text-overflow: ellipsis
+                        user-select: none
+                        margin-right: 5px
+                        padding: 0 10px
 </style>

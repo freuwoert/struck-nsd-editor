@@ -6,6 +6,7 @@ export default class TabStruct {
             changed: false,
             name: null,
             savePath: null,
+            exportPath: null,
         }
         this.ui = {
             view: null,

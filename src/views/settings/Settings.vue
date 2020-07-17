@@ -1,9 +1,10 @@
 <template>
     <div class="background">
         <div class="container">
-            <div class="exit" @click="setSettingsUI(false)">&#983382;</div>
-            <div class="panel">
-                
+            <div class="title">Einstellungen</div>
+            <div class="row">
+                <div class="ghost-button" @click="setSettingsUI(false)">Abbrechen</div>
+                <div class="button">Übernehmen</div>
             </div>
         </div>
     </div>
@@ -47,38 +48,52 @@
         left: 0
 
         .container
-            width: 400px
-            height: 600px
+            width: 500px
             border-radius: 10px
             position: absolute
             top: 50%
             left: 50%
+            padding: 30px
+            padding-bottom: 20px
+            text-align: left
             transform: translate(-50%, -50%)
             background: var(--background)
-        
-            .exit
-                height: 30px
-                width: 30px
-                line-height: 30px
-                position: absolute
-                top: 5px
-                right: 5px
-                user-select: none
-                border-radius: 40px
-                color: var(--color)
-                font-size: 20px
-                font-family: 'Material Icons'
-                cursor: pointer
 
-                &:hover
-                    background: var(--color-dimm)
-                    color: var(--primary)
-
-            .panel
-                position: absolute
-                top: 40px
-                left: 0
+            .title
                 width: 100%
-                height: calc(100% - 40px)
-                border-radius: 0 0 10px 10px
+                line-height: 20px
+                padding-bottom: 5px
+                margin-bottom: 20px
+                border-bottom: 1px solid var(--color-lighter)
+                text-align: left
+                font-size: 14px
+                font-weight: 800
+                letter-spacing: 0.5px
+                color: var(--color-bright)
+                user-select: none
+
+            .row
+                margin: 10px 0
+                width: 100%
+                text-align: left
+
+                .name
+                    width: 110px
+                    color: var(--color-light)
+                    font-size: 11px
+                    line-height: 20px
+                    padding: 5px 0
+                    font-weight: 500
+                    vertical-align: top
+
+                .input-container
+                    width: calc(100% - 110px)
+                    vertical-align: top
+
+                .button
+                    float: right
+
+                .ghost-button
+                    margin-left: 15px
+                    float: right
 </style>
