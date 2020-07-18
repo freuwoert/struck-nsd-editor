@@ -34,7 +34,7 @@ html
     height: 100%
     
     --primary: #7158e2
-    --accent: #18dcff
+    --accent: #5434e4
 
     --red: #FF5959
     --yellow: #FFDD2A
@@ -391,21 +391,18 @@ h1,h2,h3,h4,h5,h6
     font-weight: 800
     letter-spacing: 1px
     text-align: center
-    padding: 3px 13px
+    padding: 5px 15px
     overflow: hidden
     text-overflow: ellipsis
     white-space: nowrap
-    color: var(--color)
-    border: 2px solid var(--color)
+    color: white
+    background: var(--primary)
     cursor: pointer
     user-select: none
     vertical-align: top
 
     &:hover
-        background: var(--color)
-        padding: 5px 15px
-        border: none
-        color: white
+        background: var(--accent)
 
 .ghost-button
     border-radius: 15px
@@ -418,14 +415,14 @@ h1,h2,h3,h4,h5,h6
     overflow: hidden
     text-overflow: ellipsis
     white-space: nowrap
-    color: var(--color-light)
-    border: 2px solid var(--color-light)
+    color: var(--color)
+    border: 2px solid var(--color)
     cursor: pointer
     user-select: none
     vertical-align: top
 
     &:hover
-        background: var(--color-light)
+        background: var(--color)
         padding: 5px 15px
         border: none
         color: white
@@ -447,5 +444,4 @@ h1,h2,h3,h4,h5,h6
     vertical-align: top
 
     &:hover
-        background: var(--color-dimm)
         color: var(--color-bright)

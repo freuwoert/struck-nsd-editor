@@ -10,8 +10,8 @@
             </div>
             <div class="row">
                 <div class="name">Exportieren nach:</div>
-                <div class="input-container">
-                    <div class="save-path" :title="savePath">{{savePath}}</div>
+                <div class="input-container max-width">
+                    <div class="save-path" :title="savePath">{{savePath ? savePath : 'Auswählen'}}</div>
                     <div class="text-button">Ändern</div>
                 </div>
             </div>
@@ -113,8 +113,13 @@
                     user-select: none
 
                 .input-container
-                    width: calc(100% - 110px)
                     vertical-align: top
+
+                    &.max-width
+                        width: calc(100% - 110px)
+
+                    .text-button
+                        float: right
 
                     .export-method
                         width: 100px
