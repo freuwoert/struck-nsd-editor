@@ -330,6 +330,28 @@ const actions = {
             }
         }
     },
+
+    // ToDo: Implement own renderer to include SVG, PNG, JPG and TEX
+    exportFile({ commit, dispatch }, payload) {
+
+        // Checks for trace
+        if( !payload.hasOwnProperty('format') ) return
+
+        let exportToPNG = () => {
+            
+        }
+
+        switch (payload.format)
+        {
+            case 'PNG': exportToPNG(); break
+        }
+    },
+
+    async dataUrlToFile({ commit, dispatch }, payload) {
+        payload.dataUrl = payload.dataUrl.replace(/^data:image\/png;base64,/, "")
+        let path_ = payload.path
+        await fs.writeFile(path.join(path.dirname(path_), path.basename(path_, path.extname(path_)) + '.png'), payload.dataUrl, 'base64')
+    }
 }
 
 const mutations = {
@@ -525,7 +547,7 @@ const mutations = {
         /*
         *  This functions expect it's parameter "structures" to have an array named "children"
         */
-       
+
         let recursiveDelete = (structures) => {
 
             for (let i = 0; i < structures.children.length; i++)

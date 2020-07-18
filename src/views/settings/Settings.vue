@@ -40,7 +40,7 @@
 <style lang="sass" scoped>
     .background
         z-index: 1000
-        background: #00000050
+        background: #00000070
         width: 100%
         height: 100%
         position: fixed

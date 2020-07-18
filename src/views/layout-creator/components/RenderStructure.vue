@@ -1,126 +1,105 @@
 <template>
-    <div class="structure" @click="selectElement($event)" :class="{'selected': selectedElements.includes(structure.uuid)}">
+    <div class="structure-rendered">
 
         <div class="command" v-if="structure.type === 'command'">
-            <div class="content" @click.stop @blur="blur($event)" contenteditable="true">{{structure.content}}</div>
-            <div @dragstart.prevent @click.stop @mousedown="mouseDown($event, 'below')" class="hitbox"></div>
+            <div class="content">{{structure.content}}</div>
         </div>
 
 
 
         <div class="call" v-if="structure.type === 'call'">
-            <div class="content" @click.stop @blur="blur($event)" contenteditable="true">{{structure.content}}</div>
-            <div @dragstart.prevent @click.stop @mousedown="mouseDown($event, 'below')" class="hitbox"></div>
+            <div class="content" >{{structure.content}}</div>
         </div>
 
 
 
         <div class="break" v-if="structure.type === 'break'">
-            <div class="content" @click.stop @blur="blur($event)" contenteditable="true">{{structure.content}}</div>
+            <div class="content">{{structure.content}}</div>
 
             <svg class="break-path" preserveAspectRatio="none" viewBox="0 0 20 48">
                 <polyline points="20 0 0 24 20 48"></polyline>
             </svg>
-
-            <div @dragstart.prevent @click.stop @mousedown="mouseDown($event, 'below')" class="hitbox"></div>
         </div>
 
 
 
         <div class="while" v-if="structure.type === 'while'">
             <div class="content-container">
-                <div class="content" @click.stop @blur="blur($event)" contenteditable="true">{{structure.content}}</div>
+                <div class="content">{{structure.content}}</div>
             </div>
 
             <div class="loop-container">
-                <div @dragstart.prevent @click.stop @mousedown="mouseDown($event, 'into')" class="hitbox hitbox-top"></div>
-                <structure v-for="(child, i) in structure.children" :key="i" :trace="trace+'-N:'+i" :structure="child"></structure>
-                <div class="placeholder" v-show="structure.children.length == 0"></div>
+                <render-structure v-for="(child, i) in structure.children" :key="i" :trace="trace+'-N:'+i" :structure="child"></render-structure>
+                <div class="placeholder rendered" v-show="structure.children.length == 0"></div>
             </div>
-
-            <div @dragstart.prevent @click.stop @mousedown="mouseDown($event, 'below')" class="hitbox hitbox-bottom"></div>
         </div>
 
 
 
         <div class="do-while" v-if="structure.type === 'do-while'">
             <div class="loop-container">
-                <div @dragstart.prevent @click.stop @mousedown="mouseDown($event, 'into')" class="hitbox hitbox-top"></div>
-                <structure v-for="(child, i) in structure.children" :key="i" :trace="trace+'-N:'+i" :structure="child"></structure>
-                <div class="placeholder" v-show="structure.children.length == 0"></div>
+                <render-structure v-for="(child, i) in structure.children" :key="i" :trace="trace+'-N:'+i" :structure="child"></render-structure>
+                <div class="placeholder rendered" v-show="structure.children.length == 0"></div>
             </div>
 
             <div class="content-container">
-                <div class="content" @click.stop @blur="blur($event)" contenteditable="true">{{structure.content}}</div>
+                <div class="content">{{structure.content}}</div>
             </div>
-
-            <div @dragstart.prevent @click.stop @mousedown="mouseDown($event, 'below')" class="hitbox hitbox-bottom"></div>
         </div>
 
 
 
         <div class="endless-loop" v-if="structure.type === 'endless-loop'">
             <div class="content-container">
-                <div class="content" @click.stop @blur="blur($event)" contenteditable="true">{{structure.content}}</div>
+                <div class="content">{{structure.content}}</div>
             </div>
 
             <div class="loop-container">
-                <div @dragstart.prevent @click.stop @mousedown="mouseDown($event, 'into')" class="hitbox hitbox-top"></div>
-                <structure v-for="(child, i) in structure.children" :key="i" :trace="trace+'-N:'+i" :structure="child"></structure>
-                <div class="placeholder" v-show="structure.children.length == 0"></div>
+                <render-structure v-for="(child, i) in structure.children" :key="i" :trace="trace+'-N:'+i" :structure="child"></render-structure>
+                <div class="placeholder rendered" v-show="structure.children.length == 0"></div>
             </div>
-
-            <div @dragstart.prevent @click.stop @mousedown="mouseDown($event, 'below')" class="hitbox hitbox-bottom"></div>
         </div>
 
 
 
         <div class="if" v-if="structure.type === 'if'">
             <div class="content-container">
-                <div class="content" @click.stop @blur="blur($event)" contenteditable="true">{{structure.content}}</div>
+                <div class="content">{{structure.content}}</div>
             </div>
 
             <div class="condition-container">
                 <div class="condition-slot" v-for="(slot, i) in structure.slots" :key="i">
-                    <div class="label" @click.stop @blur="blur($event, trace+'-'+i+':N')" contenteditable="true">{{slot.content}}</div>
+                    <div class="label">{{slot.content}}</div>
 
-                    <structure v-for="(child, j) in slot.children" :key="j" :trace="trace+'-'+i+':'+j" :structure="child"></structure>
-                    <div class="placeholder" v-show="slot.children.length == 0"></div>
-
-                    <div @dragstart.prevent @click.stop @mousedown="mouseDown($event, 'into', trace+'-'+i+':N')" class="hitbox hitbox-top"></div>
+                    <render-structure v-for="(child, j) in slot.children" :key="j" :trace="trace+'-'+i+':'+j" :structure="child"></render-structure>
+                    <div class="placeholder rendered" v-show="slot.children.length == 0"></div>
                 </div>
             </div>
 
             <!-- <svg class="condition-path" preserveAspectRatio="none" viewBox="0 0 400 40">
                 <polyline points="0 0 200 40 400 0"></polyline>
             </svg> -->
-
-            <div @dragstart.prevent @click.stop @mousedown="mouseDown($event, 'below')" class="hitbox hitbox-bottom"></div>
         </div>
 
 
 
         <div class="switch" v-if="structure.type === 'switch'">
             <div class="content-container">
-                <div class="content" @click.stop @blur="blur($event)" contenteditable="true">{{structure.content}}</div>
+                <div class="content">{{structure.content}}</div>
             </div>
 
             <div class="condition-container">
                 <div class="condition-slot" v-for="(slot, i) in structure.slots" :key="i">
-                    <div class="label" @click.stop @blur="blur($event, trace+'-'+i+':N')" contenteditable="true">{{slot.content}}</div>
+                    <div class="label">{{slot.content}}</div>
 
-                    <structure v-for="(child, j) in slot.children" :key="j" :trace="trace+'-'+i+':'+j" :structure="child"></structure>
-                    <div class="placeholder" v-show="slot.children.length == 0"></div>
-
-                    <div @dragstart.prevent @click.stop @mousedown="mouseDown($event, 'into', trace+'-'+i+':N')" class="hitbox hitbox-top"></div>
+                    <render-structure v-for="(child, j) in slot.children" :key="j" :trace="trace+'-'+i+':'+j" :structure="child"></render-structure>
+                    <div class="placeholder rendered" v-show="slot.children.length == 0"></div>
                 </div>
             </div>
 
             <!-- <svg class="condition-path" preserveAspectRatio="none" viewBox="0 0 400 40">
                 <polyline points="0 0 200 40 400 0"></polyline>
             </svg> -->
-
-            <div @dragstart.prevent @click.stop @mousedown="mouseDown($event, 'below')" class="hitbox hitbox-bottom"></div>
         </div>
     </div>
 </template>
@@ -131,40 +110,13 @@
     import { mapGetters, mapActions } from 'vuex'
 
     export default {
-        name: 'structure',
+        name: 'render-structure',
         props: {
             structure: {
                 type: Object,
                 required: true
             },
             trace: {}
-        },
-        computed: {
-            ...mapGetters([
-                'selectedElements',
-            ]),
-        },
-        methods: {
-            ...mapActions([
-                'setContent',
-                'selectElements',
-            ]),
-
-            mouseDown(event, position, trace = this.trace) {
-                EventBus.$emit('toggle-create-element', {event, trace, position})
-            },
-
-            blur(event, trace = this.trace) {
-                if(event)
-                {
-                    this.setContent({trace, content: event.target.innerText})
-                }
-            },
-
-            selectElement(event) {
-                event.stopPropagation()
-                this.selectElements({uuids: [this.structure.uuid], clearPrevious: !event.ctrlKey})
-            }
         },
         components: {
             StructureInput,
@@ -173,68 +125,13 @@
 </script>
 
 <style lang="sass">
-    .placeholder
-        background-image: url('~@/assets/images/interface/general/line.svg')
-        background-size: 20px
-        background-position: top center
-        height: 50px
-        width: 100%
-        min-width: 50px
-        border: 1px solid black
-        margin-bottom: -1px
 
-        &.rendered
-            background-image: none
-
-    .hitbox
-        background: #2d98da77
-        border-radius: 5px
-        width: 0
-        height: 30px
-        position: absolute
-        bottom: -15px
-        left: 0
-        z-index: 10
-        opacity: 0
-        cursor: pointer
-        display: block
-
-        &:hover
-            opacity: 1
-
-        &.first
-            height: 30px
-            left: 15px
-            top: 0
-            width: calc(100% - 30px)
-
-    .structure
+    .structure-rendered
         display: block
         text-align: left
         position: relative
         margin-bottom: -1px
-
-        // &:hover
-        //     .command,
-        //     .call,
-        //     .break,
-        //     .while,
-        //     .do-while,
-        //     .endless-loop,
-        //     .if,
-        //     .switch,
-        //         outline: 4px solid #aaaaaa
-
-        &.selected
-            .command,
-            .call,
-            .break,
-            .while,
-            .do-while,
-            .endless-loop,
-            .if,
-            .switch,
-                outline: 4px solid #fd9644 !important
+        user-select: none
 
         .command
             width: 100%
@@ -245,9 +142,6 @@
             text-align: center
             border: 1px solid black
             position: relative
-
-            .hitbox
-                width: 100%
 
         .call
             width: 100%
@@ -275,9 +169,6 @@
                 height: calc(100% + 2px)
                 border-left: 1px solid black
 
-            .hitbox
-                width: 100%
-
         .break
             width: 100%
             background: white
@@ -297,9 +188,6 @@
                 stroke: #000
                 stroke-width: 0.7px
                 fill: none
-
-            .hitbox
-                width: 100%
 
         .while
             width: 100%
@@ -323,13 +211,6 @@
                 bottom: -1px
                 right: -1px
                 padding-bottom: 1px
-
-                > .hitbox-top
-                    top: -15px
-                    width: 100%
-
-            > .hitbox-bottom
-                width: 18px
         
         .do-while
             width: 100%
@@ -354,14 +235,6 @@
                 right: -1px
                 padding-bottom: 1px
 
-                > .hitbox-top
-                    top: 0px
-                    width: 100%
-                    height: 20px
-
-            > .hitbox-bottom
-                width: 100%
-
         .endless-loop
             width: 100%
             background: white
@@ -383,13 +256,6 @@
                 position: relative
                 right: -1px
                 padding-bottom: 1px
-
-                > .hitbox-top
-                    top: -15px
-                    width: 100%
-
-            > .hitbox-bottom
-                width: 100%
 
         .if
             width: 100%
@@ -432,11 +298,6 @@
                     position: relative
                     padding-bottom: 1px
 
-                    > .hitbox-top
-                        top: 24px
-                        height: 20px
-                        width: 100%
-
                     .label
                         line-height: 20px
                         font-size: 14px
@@ -446,19 +307,11 @@
                         padding: 2px 4px
                         border-radius: 3px
 
-                        &:hover
-                            background: #1dd1a199
-
                     &:last-of-type > .label
                         float: right
 
                     &:not(:last-of-type)
                         margin-right: -1px
-
-            > .hitbox-bottom
-                width: 100%
-                height: 20px
-                bottom: -20px
 
         .switch
             width: 100%
@@ -501,11 +354,6 @@
                     position: relative
                     padding-bottom: 1px
 
-                    > .hitbox-top
-                        top: 24px
-                        height: 20px
-                        width: 100%
-
                     .label
                         line-height: 20px
                         font-size: 14px
@@ -524,11 +372,6 @@
                     &:not(:last-of-type)
                         margin-right: -1px
 
-            > .hitbox-bottom
-                width: 100%
-                height: 20px
-                bottom: -20px
-
         .command,
         .call,
         .break,
@@ -541,10 +384,5 @@
                 font-size: 15px
                 line-height: 20px
                 text-align: center
-                cursor: text
                 padding: 2px 4px
-                border-radius: 3px
-
-                &:hover
-                    background: #1dd1a199
 </style>
