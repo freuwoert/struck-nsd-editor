@@ -57,7 +57,7 @@ const getters = {
     //////////////
 
     activeUUID: (state) => state.document.UUID,
-    selectedStructures: (state) => state.document.ui.selectedStructures,
+    selectedElements: (state) => state.document.ui.selectedStructures,
     docStructures: (state) => state.document.structures,
     savePath: (state) => state.document.meta.savePath,
     view: (state) => state.document.ui.view,
@@ -175,6 +175,12 @@ const actions = {
 
         // Deep-clones element
         payload.element = cloneDeep(payload.element)
+
+        // Assign element UUID
+        if( !payload.element.uuid )
+        {
+            payload.element.uuid = require('uuid').v4()
+        }
         
 
         
@@ -218,24 +224,12 @@ const actions = {
         })
     },
 
-    setSelectedStructures({ commit, state }, payload) {
+    selectElements({ commit, state }, payload) {
         
-        if( !payload.uuids )
-        {
-            return
-        }
+        if( !payload.hasOwnProperty('uuids') ) return
+        if( !payload.hasOwnProperty('clearPrevious') ) payload.clearPrevious = true
 
-        commit('selectStructures_', { uuids: [...payload.uuids], clearPrevious: true })
-    },
-
-    addSelectedStructures({ commit, state }, payload) {
-        
-        if( !payload.uuids )
-        {
-            return
-        }
-
-        commit('selectStructures_', { uuids: [...payload.uuids], clearPrevious: false })
+        commit('selectStructures_', { uuids: [...payload.uuids], clearPrevious: payload.clearPrevious })
     },
 
     deselectStructures({ commit, state }, payload) {

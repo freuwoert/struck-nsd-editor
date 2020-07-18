@@ -18,6 +18,7 @@ export default class TabStruct {
         this.structures = {
             children: [
                 {
+                    uuid: '87e31692-1fa2-4dd7-aa2b-50a9b16abcfa',
                     type: 'endless-loop',
                     content: 'main()',
                     children: [],

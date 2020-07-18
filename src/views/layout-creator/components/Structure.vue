@@ -1,5 +1,5 @@
 <template>
-    <div class="structure">
+    <div class="structure" @click="selectElement($event)" :class="{'selected': selectedElements.includes(structure.uuid)}">
 
         <div class="command" v-if="structure.type === 'command'">
             <div class="content" @blur="blur($event)" contenteditable="true">{{structure.content}}</div>
@@ -139,9 +139,15 @@
             },
             trace: {}
         },
+        computed: {
+            ...mapGetters([
+                'selectedElements',
+            ]),
+        },
         methods: {
             ...mapActions([
-                'setContent'
+                'setContent',
+                'selectElements',
             ]),
 
             mouseDown(event, position, trace = this.trace) {
@@ -153,6 +159,11 @@
                 {
                     this.setContent({trace, content: event.target.innerText})
                 }
+            },
+
+            selectElement(event) {
+                event.stopPropagation()
+                this.selectElements({uuids: [this.structure.uuid], clearPrevious: !event.ctrlKey})
             }
         },
         components: {
@@ -199,6 +210,28 @@
         text-align: left
         position: relative
         margin-bottom: -1px
+
+        // &:hover
+        //     .command,
+        //     .call,
+        //     .break,
+        //     .while,
+        //     .do-while,
+        //     .endless-loop,
+        //     .if,
+        //     .switch,
+        //         outline: 4px solid #aaaaaa
+
+        &.selected
+            .command,
+            .call,
+            .break,
+            .while,
+            .do-while,
+            .endless-loop,
+            .if,
+            .switch,
+                outline: 4px solid #fd9644 !important
 
         .command
             width: 100%
