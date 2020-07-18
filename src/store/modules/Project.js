@@ -159,13 +159,13 @@ const actions = {
 
 
         // Checks for trace
-        if( !payload.trace ) return
+        if( !payload.hasOwnProperty('trace') ) return
 
         // Checks for trace
-        if( !payload.position ) return
+        if( !payload.hasOwnProperty('position') ) return
 
         // Checks for element
-        if( !payload.element ) return
+        if( !payload.hasOwnProperty('element') ) return
 
 
 
@@ -193,8 +193,12 @@ const actions = {
         })
     },
 
-    deleteStructures({ commit, state, getters }, payload) {
-        
+    deleteElements({ commit, state, getters }, payload) {
+
+        // Checks for elementUUIDs
+        if( !payload.hasOwnProperty('elementUUIDs') ) return
+
+        commit('deleteElements_', payload)
     },
 
     setContent({ commit, getters }, payload) {
@@ -205,10 +209,10 @@ const actions = {
 
 
         // Checks for trace
-        if( !payload.trace ) return
+        if( !payload.hasOwnProperty('trace') ) return
 
         // Checks for content
-        if( !payload.content ) return
+        if( !payload.hasOwnProperty('content') ) return
 
 
 
@@ -227,25 +231,22 @@ const actions = {
     selectElements({ commit, state }, payload) {
         
         if( !payload.hasOwnProperty('uuids') ) return
+
         if( !payload.hasOwnProperty('clearPrevious') ) payload.clearPrevious = true
 
-        commit('selectStructures_', { uuids: [...payload.uuids], clearPrevious: payload.clearPrevious })
+        commit('selectElements_', { uuids: [...payload.uuids], clearPrevious: payload.clearPrevious })
     },
 
-    deselectStructures({ commit, state }, payload) {
+    deselectElements({ commit, state }, payload) {
         
         if( !payload.uuids || payload.uuids.length === 0 )
         {
-            commit('deselectStructures_', { deselectAll: true })
+            commit('deselectElements_', { deselectAll: true })
         }
         else
         {
-            commit('deselectStructures_', { uuids: [...payload.uuids] })
+            commit('deselectElements_', { uuids: [...payload.uuids] })
         }
-    },
-
-    setView({ commit }, payload) {
-        commit('setView_', payload)
     },
 
 
@@ -486,7 +487,7 @@ const mutations = {
         location.content = JSON.parse(JSON.stringify(param.content))
     },
 
-    selectStructures_: (state, param) => {
+    selectElements_: (state, param) => {
         if( param.clearPrevious )
         {
             state.document.ui.selectedStructures = []
@@ -497,7 +498,7 @@ const mutations = {
         EventBus.$emit('structure-selected', state.document.ui.selectedStructures)
     },
 
-    deselectStructures_: (state, param) => {
+    deselectElements_: (state, param) => {
 
         if( param.deselectAll === true )
         {
@@ -505,7 +506,8 @@ const mutations = {
         }
         else
         {
-            for (const uuid of param.uuids) {
+            for (const uuid of param.uuids)
+            {
                 let i = state.document.ui.selectedStructures.indexOf(uuid)
     
                 if( i >= 0 )
@@ -518,8 +520,46 @@ const mutations = {
         EventBus.$emit('structure-selected', state.document.ui.selectedStructures)
     },
 
-    setView_: (state, params) => {
-        state.document.ui.view = params.view
+    deleteElements_: (state, param) => {
+
+        /*
+        *  This functions expect it's parameter "structures" to have an array named "children"
+        */
+       
+        let recursiveDelete = (structures) => {
+
+            for (let i = 0; i < structures.children.length; i++)
+            {
+                const structure = structures.children[i]
+                
+                // Checks if current UUID is selected to be deleted
+                if( param.elementUUIDs.includes(structure.uuid) )
+                {
+                    // Deletes element
+                    structures.children.splice(i, 1)
+
+                    // No need for further recursion because parent element just got deleted
+                    return
+                }
+                
+                if( structure.hasOwnProperty('slots') )
+                {
+                    for (const slot of structure.slots)
+                    {
+                        recursiveDelete(slot)
+                    }
+                }
+    
+                if( structure.hasOwnProperty('children') )
+                {
+                    recursiveDelete(structure)
+                }
+    
+                return
+            }
+        }
+
+        recursiveDelete(state.document.structures)
     },
 
     setSavePath_: (state, param) => {

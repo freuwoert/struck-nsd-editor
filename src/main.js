@@ -24,6 +24,7 @@ const app = new Vue({
         ...mapGetters([
             'vAppInfo',
             'GENERAL_UI',
+            'selectedElements',
         ]),
     },
     methods: {
@@ -31,6 +32,7 @@ const app = new Vue({
             'saveFile',
             'openFiles',
             'addTab',
+            'deleteElements',
         ])
     },
     mounted() {
@@ -53,6 +55,12 @@ const app = new Vue({
         EventBus.$on('save-as', () => {
             this.saveFile({force: true})
         })
+
+        EventBus.$on('delete', () => {
+            this.deleteElements({elementUUIDs: [
+                ...this.selectedElements
+            ]})
+        })
     },
     render: h => h(App)
 })
@@ -69,6 +77,8 @@ Mousetrap.bind(['ctrl+shift+s','command+shift+s'], function(){ EventBus.$emit('s
 Mousetrap.bind(['ctrl+shift+e','command+shift+e'], function(){ EventBus.$emit('settings') })
 Mousetrap.bind(['ctrl+shift+m','command+shift+m'], function(){ EventBus.$emit('menu') })
 Mousetrap.bind(['del','backspace'],                function(){ EventBus.$emit('delete') })
+Mousetrap.bind(['ctrl+z','command+z'],             function(){ EventBus.$emit('undo') })
+Mousetrap.bind(['ctrl+y','ctrl+shift+z','command+shift+z'], function(){ EventBus.$emit('redo') })
 
 
 // When document has loaded, initialise
