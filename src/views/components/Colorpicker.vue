@@ -406,7 +406,7 @@
                     width: 15px
                     border-radius: 3px
                     overflow: hidden
-                    background-image: url('~@/assets/images/interface/general/grid.svg')
+                    background-image: url('~@/assets/images/interface/grid.svg')
                     background-size: 15px
                     background-position: top center
                     background-color: white

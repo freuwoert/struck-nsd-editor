@@ -2,21 +2,9 @@ module.exports = {
     pluginOptions: {
         electronBuilder: {
             builderOptions: {
-                appId: "com.freuwort.struck",
-                productName: "Struck NSD Editor",
+                productName: "Struck Editor",
                 npmArgs: "--production",
-                publish: ['github'],
-                win: {
-                    "target": "nsis",
-                    "icon": "build/icon.ico",
-                    "publish": [
-                        {
-                            "provider": "github",
-                            "owner": "freuwoert",
-                            "repo": "Struck-NSD-Editor"
-                        }
-                    ]
-                },
+                publish: ["github"],
                 nsis: {
                     "runAfterFinish": false,
                     "oneClick": false,

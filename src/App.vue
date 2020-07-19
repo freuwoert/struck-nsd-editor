@@ -40,6 +40,7 @@
         <!-- Overlays / Popups -->
         <settings v-show="settingsUI"></settings>
         <export v-show="exportUI"></export>
+        <!-- <release-notes :show="true" version="Sprout Update"></release-notes> -->
     </div>
 </template>
 

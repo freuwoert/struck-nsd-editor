@@ -63,16 +63,19 @@ const app = new Vue({
             ]})
         })
 
+        // Tigger loaded event
+        ipcRenderer.send('loaded')
+
         ipcRenderer.on('mainCommand', function(event, args) {
     
             const commandsFromMain = {
-                startupOpen:    (args) => { console.log(args[1]) },
+                openOnStartup:    (args) => { console.log(args[1]) },
         
-                update_checking:        (args) => { console.log('Searching for updates...') },
-                update_available:       (args) => { console.log('Update found: <b>Version '+ JSON.parse(args[1]).version +'</b>') },
-                update_not_available:   (args) => { console.log('You are up to date!') },
-                update_downloaded:      (args) => { console.log('<b>Update wurde heruntergeladen!</b><br>Sie können das Programm jederzeit neustarten, um das Update zu installieren.') },
-                update_error:           (args) => { console.log('Update Fehler:<br>') },
+                update_checking:        (args) => { console.log('Suche nach Updates...') },
+                update_available:       (args) => { console.log('Update gefunden: Version '+ JSON.parse(args[1]).version +'') },
+                update_not_available:   (args) => { console.log('Du bist auf dem neusten Stand!') },
+                update_downloaded:      (args) => { console.log('Update wurde heruntergeladen!Sie können das Programm jederzeit neustarten, um das Update zu installieren.') },
+                update_error:           (args) => { console.log('Update Fehler: '+ args[1]) },
             }
         
             if( commandsFromMain.hasOwnProperty(args[0]) )

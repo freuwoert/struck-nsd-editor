@@ -2,22 +2,23 @@
     <div class="release-note-bg" :class="{'active' : show}">
         <div class="release-note-holder">
             <div class="release-image">
-                <span class="title">
-                    {{info.versionName}}
-                    <span class="version">{{info.version}}</span>
-                </span>
+                <span class="title">{{version}}</span>
+                <div class="logo"></div>
             </div>
-            <span class="headline">Welcome to VuDesigner!</span>
+            <span class="headline">Willkommen in Struck!</span>
             <div class="release-note-container">
-                • Add and remove elements<br>
+                In dieser Version von <b>Struck</b> kannst du nun auch:<br>
+                » Elemente hinzufügen und löschen<br>
+                » Dateien speichern<br>
+                » Dateien als PNG oder JPG exportieren<br>
             </div>
-            <div class="close-release-note" @click="$emit('close')">Let's go!</div>
+            <div class="close-release-note" @click="$emit('close')">Auf gehts!</div>
         </div>
     </div>
 </template>
 <script>
     export default {
-        props: ['show', 'info'],
+        props: ['show', 'version'],
     }
 </script>
 <style lang="sass" scoped>
@@ -35,60 +36,47 @@
 
         &.active
             pointer-events: all
-            background: rgba(0,0,0,0.8)
-
-            .release-note-holder
-                opacity: 1 !important
-                transform: translateY(0) !important
+            background: rgba(0,0,0,0.7)
 
         .release-note-holder
-            width: calc(100% - 160px)
-            max-width: 700px
-            height: calc(100% - 180px)
-            margin: 90px auto
-            display: block
-            position: initial
+            width: calc(100% - 40px)
+            max-width: 500px
+            position: fixed
+            top: 50%
+            left: 50%
             border-radius: 20px
-            box-shadow: none
             font-size: 0
-            background: white
-            transform: translateY(50px)
-            opacity: 0
-            box-shadow: 0px 4px 5px rgba(0, 0, 0, 0.3)
+            background: #ffffff
+            transform: translate(-50%, -50%)
             transition: all 300ms ease-in-out
 
             .release-image
-                height: 270px
-                width: calc(100% + 140px)
-                margin: 40px -70px 70px
-                border-radius: 15px
-                background-image: url('~@/assets/images/release-bg/rn_init_update.png')
+                height: 220px
+                width: 100%
+                margin-bottom: 70px
+                border-radius: 20px  20px 0 0
+                background-image: url('~@/assets/images/interface/update_sprout.jpg')
                 background-repeat: no-repeat
                 background-position: center
                 background-size: cover
-                filter: drop-shadow(0px 10px 12px rgba(0,0,0,0.4))
                 position: relative
+                user-select: none
 
                 .title
                     color: white
                     font-weight: 600
-                    letter-spacing: 3px
-                    line-height: 80px
+                    line-height: 90px
                     position: absolute
-                    top: calc(50% - 40px)
-                    left: 0
-                    font-size: 50px
-                    width: 100%
+                    top: 50%
+                    left: 10px
+                    transform: translateY(-50%)
+                    font-size: 40px
+                    width: calc(100% - 20px)
                     text-align: center
-                    background: rgba(0,0,0,0.4)
-
-                    .version
-                        font-size: 30px
-                        height: 50px
-                        vertical-align: top
-                        font-weight: 200
-                        letter-spacing: 0
-                        transform: translate(-10px, -40%)
+                    background: #00000030
+                    backdrop-filter: blur(20px)
+                    border-radius: 15px
+                    z-index: 1
             
             .headline
                 color: black
@@ -100,8 +88,7 @@
 
             .release-note-container
                 width: calc(100% - 40px)
-                height: calc(100% - 60px - 480px)
-                margin: 20px 40px
+                margin: 20px 40px 60px
                 text-align: left
                 color: #333
                 font-size: 15px
@@ -114,15 +101,15 @@
                 border-radius: 5px
                 text-align: center
                 color: white
-                background: black
+                background: var(--primary)
                 width: 200px
                 font-size: 16px
                 display: block
                 margin: 20px auto
                 cursor: pointer
                 user-select: none
-                transition: all 100ms
+                transition: all 50ms
 
                 &:hover
-                    filter: drop-shadow(0px 3px 4px rgba(0,0,0,0.3))
+                    background: var(--accent)
 </style>

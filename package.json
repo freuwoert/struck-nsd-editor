@@ -1,19 +1,16 @@
 {
   "name": "struck-nsd-editor",
-  "description": "efficient web-based-ui editor",
-  "version": "0.2.0",
+  "description": "Easy to use NSD editor",
+  "version": "0.4.0",
   "main": "background.js",
   "scripts": {
     "electron:build": "vue-cli-service electron:build",
     "electron:serve": "vue-cli-service electron:serve",
+    "electron:publish": "vue-cli-service electron:build -- -p always",
     "electron:generate-icons": "electron-icon-builder --input=./public/icon.png --output=build --flatten",
     "preinstall": "npx npm-force-resolutions",
     "postinstall": "electron-builder install-app-deps",
     "postuninstall": "electron-builder install-app-deps"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/freuwoert/Struck-NSD-Editor.git"
   },
   "keywords": [
     "nsd",

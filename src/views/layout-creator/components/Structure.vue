@@ -174,7 +174,7 @@
 
 <style lang="sass">
     .placeholder
-        background-image: url('~@/assets/images/interface/general/line.svg')
+        background-image: url('~@/assets/images/interface/line.svg')
         background-size: 20px
         background-position: top center
         height: 50px

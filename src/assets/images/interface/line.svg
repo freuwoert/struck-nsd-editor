@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="30" height="30" viewBox="0 0 30 30">
+  <defs>
+    <clipPath id="clip-path">
+      <rect width="64" height="57" fill="none"/>
+    </clipPath>
+    <clipPath id="clip-line">
+      <rect width="30" height="30"/>
+    </clipPath>
+  </defs>
+  <g id="line" clip-path="url(#clip-line)">
+    <rect width="30" height="30" fill="#fff"/>
+    <g id="Wiederholungsraster_1" data-name="Wiederholungsraster 1" clip-path="url(#clip-path)">
+      <g>
+        <path id="Pfad_1" data-name="Pfad 1" d="M0,0H6V6L-18,30h-6V24Z" transform="translate(24)" fill="#ddd"/>
+        <path id="Pfad_2" data-name="Pfad 2" d="M6,0V6H0Z" transform="translate(24 24)" fill="#ddd"/>
+        <path id="Pfad_3" data-name="Pfad 3" d="M6,0V6H0Z" transform="translate(6 6) rotate(180)" fill="#ddd"/>
+      </g>
+      <g transform="translate(30)">
+        <path id="Pfad_1-2" data-name="Pfad 1" d="M0,0H6V6L-18,30h-6V24Z" transform="translate(24)" fill="#ddd"/>
+        <path id="Pfad_2-2" data-name="Pfad 2" d="M6,0V6H0Z" transform="translate(24 24)" fill="#ddd"/>
+        <path id="Pfad_3-2" data-name="Pfad 3" d="M6,0V6H0Z" transform="translate(6 6) rotate(180)" fill="#ddd"/>
+      </g>
+      <g transform="translate(60)">
+        <path id="Pfad_1-3" data-name="Pfad 1" d="M0,0H6V6L-18,30h-6V24Z" transform="translate(24)" fill="#ddd"/>
+        <path id="Pfad_2-3" data-name="Pfad 2" d="M6,0V6H0Z" transform="translate(24 24)" fill="#ddd"/>
+        <path id="Pfad_3-3" data-name="Pfad 3" d="M6,0V6H0Z" transform="translate(6 6) rotate(180)" fill="#ddd"/>
+      </g>
+      <g transform="translate(0 30)">
+        <path id="Pfad_1-4" data-name="Pfad 1" d="M0,0H6V6L-18,30h-6V24Z" transform="translate(24)" fill="#ddd"/>
+        <path id="Pfad_2-4" data-name="Pfad 2" d="M6,0V6H0Z" transform="translate(24 24)" fill="#ddd"/>
+        <path id="Pfad_3-4" data-name="Pfad 3" d="M6,0V6H0Z" transform="translate(6 6) rotate(180)" fill="#ddd"/>
+      </g>
+      <g transform="translate(30 30)">
+        <path id="Pfad_1-5" data-name="Pfad 1" d="M0,0H6V6L-18,30h-6V24Z" transform="translate(24)" fill="#ddd"/>
+        <path id="Pfad_2-5" data-name="Pfad 2" d="M6,0V6H0Z" transform="translate(24 24)" fill="#ddd"/>
+        <path id="Pfad_3-5" data-name="Pfad 3" d="M6,0V6H0Z" transform="translate(6 6) rotate(180)" fill="#ddd"/>
+      </g>
+      <g transform="translate(60 30)">
+        <path id="Pfad_1-6" data-name="Pfad 1" d="M0,0H6V6L-18,30h-6V24Z" transform="translate(24)" fill="#ddd"/>
+        <path id="Pfad_2-6" data-name="Pfad 2" d="M6,0V6H0Z" transform="translate(24 24)" fill="#ddd"/>
+        <path id="Pfad_3-6" data-name="Pfad 3" d="M6,0V6H0Z" transform="translate(6 6) rotate(180)" fill="#ddd"/>
+      </g>
+    </g>
+  </g>
+</svg>

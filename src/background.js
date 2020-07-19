@@ -15,8 +15,6 @@ let gotTheLock = app.requestSingleInstanceLock()
 
 protocol.registerSchemesAsPrivileged([{ scheme: 'app', privileges: { secure: true, standard: true } }])
 
-
-
 if ( !gotTheLock )
 {
     app.quit()
@@ -25,8 +23,9 @@ else
 {
     app.on('second-instance', (event, commandLine, workingDirectory) => {
 
-        toRenderer(['startupOpen', commandLine[3]])
+        toRenderer(['openOnStartup', commandLine[3]])
 
+        // Refocuses the window
         if (mainWindow)
         {
             if (mainWindow.isMinimized()) mainWindow.restore()
@@ -43,6 +42,7 @@ else
             BrowserWindow.addDevToolsExtension('node_modules/vue-devtools/vender')
             require('vue-devtools').install()
         }
+
         createWindow()
     })
     
@@ -76,12 +76,15 @@ let createWindow = () => {
     }
 
     mainWindow.maximize()
-    mainWindow.setTitle(`Layout Editor ${app.getVersion()}`)
+    mainWindow.setTitle('Struck Editor')
     mainWindow.on('closed', () => { mainWindow = null })
 
-    globalShortcut.register('f5', () => {
-        mainWindow.reload()
-    })
+    if (isDevelopment && !process.env.IS_TEST)
+    {
+        globalShortcut.register('f5', () => {
+            mainWindow.reload()
+        })
+    }
 }
 
 
@@ -91,10 +94,14 @@ let toRenderer = (arg) => {
 }
 
 
+/*
+ *  Before I forget it again: YOU have to trigger "loaded" from the renderer
+ *  Geez ._.
+ */
 
 ipcMain.on('loaded', (event) => {
 
-    toRenderer(['startupOpen', process.argv[1]])
+    toRenderer(['openOnStartup', process.argv[1]])
 
     autoUpdater.on('error', function (err) {
         toRenderer(['update_error', JSON.stringify(err)])
@@ -118,6 +125,7 @@ ipcMain.on('loaded', (event) => {
 
     autoUpdater.logger = log
     autoUpdater.logger.transports.file.level = 'info'
+
     log.info('App starting...')
 
     setTimeout(() => {
