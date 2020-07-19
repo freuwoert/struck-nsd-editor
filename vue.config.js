@@ -5,6 +5,7 @@ module.exports = {
                 appId: "com.freuwort.struck",
                 productName: "Struck NSD Editor",
                 npmArgs: "--production",
+                publish: ['github'],
                 win: {
                     "target": "nsis",
                     "icon": "build/icon.ico",
@@ -12,7 +13,7 @@ module.exports = {
                         {
                             "provider": "github",
                             "owner": "freuwoert",
-                            "repo": "vudesigner"
+                            "repo": "Struck-NSD-Editor"
                         }
                     ]
                 },
@@ -21,7 +22,16 @@ module.exports = {
                     "oneClick": false,
                     "perMachine": true,
                     "allowToChangeInstallationDirectory": true
-                }
+                },
+                fileAssociations: [
+                    {
+                        name: "Struck",
+                        description: "Struck Dokument",
+                        ext: [
+                            "struck"
+                        ]
+                    }
+                ],
             }
         }
     }

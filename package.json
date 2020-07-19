@@ -2,43 +2,27 @@
   "name": "struck-nsd-editor",
   "description": "efficient web-based-ui editor",
   "version": "0.2.0",
-  "private": true,
   "main": "background.js",
   "scripts": {
-    "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build",
-    "test:unit": "vue-cli-service test:unit",
     "electron:build": "vue-cli-service electron:build",
     "electron:serve": "vue-cli-service electron:serve",
+    "electron:generate-icons": "electron-icon-builder --input=./public/icon.png --output=build --flatten",
     "preinstall": "npx npm-force-resolutions",
     "postinstall": "electron-builder install-app-deps",
     "postuninstall": "electron-builder install-app-deps"
   },
-  "fileAssociations": [
-    {
-      "name": "Struck",
-      "description": "Struck Dokument",
-      "ext": [
-        "struck"
-      ]
-    }
-  ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/freuwoert/vudesigner.git"
+    "url": "git+https://github.com/freuwoert/Struck-NSD-Editor.git"
   },
   "keywords": [
     "nsd",
-    "structogram",
+    "struktogramm",
     "editor",
     "struck"
   ],
   "author": "Maurice Freuwört",
-  "license": "UNLICENSED",
-  "bugs": {
-    "url": "https://github.com/freuwoert/vudesigner/issues"
-  },
-  "homepage": "https://github.com/freuwoert/vudesigner#readme",
+  "license": "cc-by-4.0",
   "dependencies": {
     "chai-as-promised": "^7.1.1",
     "color-convert": "^2.0.1",
@@ -63,6 +47,7 @@
     "chai": "^4.1.2",
     "electron": "^7.2.4",
     "electron-builder": "^22.6.0",
+    "electron-icon-builder": "^1.0.2",
     "node-sass": "^4.14.1",
     "sass-loader": "^8.0.2",
     "vue-cli-plugin-electron-builder": "^1.4.6",

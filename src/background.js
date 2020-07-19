@@ -4,6 +4,7 @@ import { app, protocol, BrowserWindow, globalShortcut } from 'electron'
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib'
 import { autoUpdater } from 'electron-updater'
 import { ipcMain } from 'electron'
+import path from 'path'
 import log from 'electron-log'
 const isDevelopment = process.env.NODE_ENV !== 'production'
 
@@ -39,14 +40,8 @@ else
 
         if (isDevelopment && !process.env.IS_TEST)
         {
-            // try {
-            //     await installVueDevtools()
-            // } catch (error) {
-            //     console.error('Vue Devtools failed to install:', error.toString())
-            // }
             BrowserWindow.addDevToolsExtension('node_modules/vue-devtools/vender')
             require('vue-devtools').install()
-            
         }
         createWindow()
     })
@@ -67,7 +62,7 @@ let createWindow = () => {
         width: 1400,
         height: 800,
         frame: false,
-        icon:'src/images/icon/logo.png',
+        icon: path.join(__static, 'icon.png'),
         webPreferences: {
             nodeIntegration: true
         }
