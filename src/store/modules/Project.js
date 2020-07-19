@@ -60,6 +60,7 @@ const getters = {
     selectedElements: (state) => state.document.ui.selectedStructures,
     docStructures: (state) => state.document.structures,
     savePath: (state) => state.document.meta.savePath,
+    exportPath: (state) => state.document.meta.exportPath,
     view: (state) => state.document.ui.view,
 }
 
@@ -203,21 +204,12 @@ const actions = {
 
     setContent({ commit, getters }, payload) {
 
-        // let path = 'state.document.structures'
-        // let layers = null
-
-
-
         // Checks for trace
         if( !payload.hasOwnProperty('trace') ) return
 
         // Checks for content
         if( !payload.hasOwnProperty('content') ) return
 
-
-
-        // TODO: check if trace is traversable
-        
 
         
         commit('setChanged_', true)
@@ -230,8 +222,10 @@ const actions = {
 
     selectElements({ commit, state }, payload) {
         
+        // Checks for uuids
         if( !payload.hasOwnProperty('uuids') ) return
 
+        // Checks for clearPrevious
         if( !payload.hasOwnProperty('clearPrevious') ) payload.clearPrevious = true
 
         commit('selectElements_', { uuids: [...payload.uuids], clearPrevious: payload.clearPrevious })
@@ -280,7 +274,11 @@ const actions = {
             await fs.writeFile(savePath, JSON.stringify(state.document))
 
             commit('setBackgroundChanged_', {index, changed: false})
-            if( isActive ) commit('setChanged_', false)
+
+            if( isActive )
+            {
+                commit('setChanged_', false)
+            }
         }
         catch(error)
         {
@@ -294,6 +292,16 @@ const actions = {
 
         commit('setBackgroundSavePath_', {index, savePath})
         commit('setSavePath_', savePath)
+    },
+
+    async chooseExportPath({ commit, getters }) {
+        let index = getters.activeIndex
+        let exportPath = await Dialog.exportDialog()
+
+        console.log(exportPath)
+
+        commit('setBackgroundExportPath_', {index, exportPath})
+        commit('setExportPath_', exportPath)
     },
 
     /*
@@ -331,26 +339,42 @@ const actions = {
         }
     },
 
-    // ToDo: Implement own renderer to include SVG, PNG, JPG and TEX
-    exportFile({ commit, dispatch }, payload) {
+    // ToDo: Implement own renderer to include PNG, JPG and TEX
 
-        // Checks for trace
+    exportFile({ commit, dispatch }, payload) {},
+
+    dataUrlToFile({}, payload) {
+
+        // Checks for format
         if( !payload.hasOwnProperty('format') ) return
 
-        let exportToPNG = () => {
-            
+        // Checks for dataUrl
+        if( !payload.hasOwnProperty('dataUrl') ) return
+
+        // Checks for path
+        if( !payload.hasOwnProperty('path') ) return
+
+
+
+        let exportToPNG = async () => {
+            let dataUrl = payload.dataUrl.replace(/^data:image\/png;base64,/, '')
+            await fs.writeFile(path.join(payload.path + '.png'), dataUrl, 'base64')
         }
+
+        let exportToJPG = async () => {
+            let dataUrl = payload.dataUrl.replace(/^data:image\/jpeg;base64,/, '')
+            await fs.writeFile(path.join(payload.path + '.jpg'), dataUrl, 'base64')
+        }
+
+
+
 
         switch (payload.format)
         {
             case 'PNG': exportToPNG(); break
+            case 'JPG': exportToJPG(); break
         }
-    },
 
-    async dataUrlToFile({ commit, dispatch }, payload) {
-        payload.dataUrl = payload.dataUrl.replace(/^data:image\/png;base64,/, "")
-        let path_ = payload.path
-        await fs.writeFile(path.join(path.dirname(path_), path.basename(path_, path.extname(path_)) + '.png'), payload.dataUrl, 'base64')
     }
 }
 
@@ -382,10 +406,14 @@ const mutations = {
         {
             state.tabs[param.index].meta.name = path.basename(param.savePath, path.extname(param.savePath))
         }
-        catch(error)
+        catch (error)
         {
             console.error(error)
         }
+    },
+
+    setBackgroundExportPath_: (state, param) => {
+        state.tabs[param.index].meta.exportPath = param.exportPath
     },
 
     setBackgroundChanged_: (state, param) => {
@@ -516,8 +544,6 @@ const mutations = {
         }
 
         state.document.ui.selectedStructures.push(...param.uuids)
-
-        EventBus.$emit('structure-selected', state.document.ui.selectedStructures)
     },
 
     deselectElements_: (state, param) => {
@@ -538,8 +564,6 @@ const mutations = {
                 }
             }
         }
-
-        EventBus.$emit('structure-selected', state.document.ui.selectedStructures)
     },
 
     deleteElements_: (state, param) => {
@@ -587,6 +611,7 @@ const mutations = {
     setSavePath_: (state, param) => {
         state.document.meta.savePath = param
 
+        // Try to extract name from savePath and set it in focused tab
         try
         {
             state.document.meta.name = path.basename(param, path.extname(param))
@@ -595,6 +620,10 @@ const mutations = {
         {
             console.error(error)
         }
+    },
+
+    setExportPath_: (state, param) => {
+        state.document.meta.exportPath = param
     },
 
     setChanged_: (state, param) => {

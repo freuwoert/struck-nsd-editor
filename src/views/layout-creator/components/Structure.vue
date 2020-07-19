@@ -234,7 +234,7 @@
             .endless-loop,
             .if,
             .switch,
-                outline: 4px solid #fd9644 !important
+                outline: 4px solid #77E3C7 !important
 
         .command
             width: 100%

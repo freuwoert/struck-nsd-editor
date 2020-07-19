@@ -5,20 +5,21 @@
             <div class="row">
                 <div class="name">Format:</div>
                 <div class="input-container">
-                    <drop-down class="export-method" :options="{'SVG':'SVG','PNG':'PNG','JPG':'JPG','TEX':'TEX'}" v-model="exportFormat"></drop-down>
+                    <!-- ToDo: Tex support -->
+                    <drop-down class="export-method" :options="exportFormats" v-model="exportFormat"></drop-down>
                 </div>
             </div>
             <div class="row">
                 <div class="name">Skalierung:</div>
                 <div class="input-container">
-                    <drop-down class="export-scale" :options="{1:'x1',2:'x2',3:'x3',4:'x4'}" v-model="exportScale"></drop-down>
+                    <drop-down class="export-scale" :options="exportScales" v-model="exportScale"></drop-down>
                 </div>
             </div>
             <div class="row">
                 <div class="name">Exportieren nach:</div>
                 <div class="input-container max-width">
-                    <div class="save-path" :title="savePath">{{savePath ? savePath : 'Auswählen'}}</div>
-                    <div class="text-button">Ändern</div>
+                    <div class="save-path" :title="exportPathPlaceholder">{{exportPathPlaceholder}}</div>
+                    <div class="text-button" @click="chooseExportPath()">Ändern</div>
                 </div>
             </div>
             <div class="divider"></div>
@@ -49,7 +50,17 @@
         data() {
             return {
                 exportFormat: 'PNG',
+                exportFormats: {
+                    'PNG': 'PNG',
+                    'JPG': 'JPG',
+                },
                 exportScale: 1,
+                exportScales: {
+                    1: 'x1',
+                    2: 'x2',
+                    3: 'x3',
+                    4: 'x4',
+                }
             }
         },
         mounted() {
@@ -59,47 +70,52 @@
         },
         computed: {
             ...mapGetters([
-                'savePath',
+                'exportPath',
                 'docStructures',
             ]),
+
+            exportPathPlaceholder() {
+                let extension = '.' + this.exportFormat.toLowerCase()
+                return this.exportPath ? this.exportPath + extension : 'Auswählen'
+            }
         },
         methods: {
             ...mapActions([
                 'setExportUI',
-                'exportFile',
                 'dataUrlToFile',
+                'chooseExportPath',
             ]),
 
-            export_() {
-                // this.exportFile({
-                //     scale: this.exportScale,
-                //     format: this.exportFormat,
-                //     path: this.savePath,
-                // })
+            async export_() {
 
                 let renderRoot = document.getElementById('render-root')
-                let vm = this
+                let dataUrl = null
 
-                htmlToImage.toPng(
-                    renderRoot,
-                    {
-                        width: renderRoot.offsetWidth * vm.exportScale,
-                        height: renderRoot.offsetHeight * vm.exportScale,
-                        background: '#00000000',
-                        style: {
-                            transform: `scale(${vm.exportScale})`,
-                            transformOrigin: 'top left'
-                        }
+                let options = {
+                    width: renderRoot.offsetWidth * this.exportScale,
+                    height: renderRoot.offsetHeight * this.exportScale,
+                    style: {
+                        transform: `scale(${this.exportScale})`,
+                        transformOrigin: 'top left',
                     }
-                ).then(function (dataUrl) {
-                    vm.dataUrlToFile({
-                        dataUrl,
-                        format: vm.exportFormat,
-                        path: vm.savePath
-                    })
-                    vm.setExportUI(false)
+                }
+
+                if (this.exportFormat === 'PNG')
+                {
+                    dataUrl = await htmlToImage.toPng(renderRoot, options)
+                }
+                else if (this.exportFormat === 'JPG')
+                {
+                    dataUrl = await htmlToImage.toJpeg(renderRoot, options)
+                }
+
+                this.dataUrlToFile({
+                    dataUrl,
+                    format: this.exportFormat,
+                    path: this.exportPath,
                 })
-                
+
+                this.setExportUI(false)
             }
         },
         components: {
@@ -116,7 +132,6 @@
 
     #render-root
         padding: 15px
-        border-radius: 7px
         background: white
         font-family: 'SCP', monospace
         position: relative
