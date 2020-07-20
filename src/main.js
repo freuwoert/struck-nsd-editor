@@ -6,13 +6,9 @@ import { ipcRenderer } from 'electron'
 
 import { mapGetters, mapActions } from 'vuex'
 
-// GLOBAL REQUIREMENTS
+const remote = require('electron').remote
 const settings = require('electron-settings')
 const Mousetrap = require('mousetrap')
-const remote = require('electron').remote
-
-
-
 
 
 
@@ -23,23 +19,29 @@ const app = new Vue({
     store,
     computed: {
         ...mapGetters([
-            'vAppInfo',
-            'GENERAL_UI',
+            'loadDelay',
+            'appVersion',
             'selectedElements',
         ]),
     },
     methods: {
         ...mapActions([
+            'addTab',
             'saveFile',
             'openFiles',
-            'addTab',
             'deleteElements',
+            'setPreloaderUI',
+            'setReleaseNoteUI',
         ])
     },
     mounted() {
+        // Starts up the app with one tab
+        // ToDo: only if startup isn't done via a file
         this.addTab({selectOnCreation: true})
 
-        // All events regarding menu options must be put down here
+        /////////////////////////////////////////////////////////////
+        // All events regarding menu options must be put down here //
+        /////////////////////////////////////////////////////////////
 
         EventBus.$on('new', () => {
             this.addTab({selectOnCreation: true})
@@ -63,32 +65,50 @@ const app = new Vue({
             ]})
         })
 
-        // Tigger loaded event
+        //////////////////////////////
+        // Events regarding ipcMain //
+        //////////////////////////////
+        
+        // Tiggers loaded event
         ipcRenderer.send('loaded')
 
-        ipcRenderer.on('mainCommand', function(event, args) {
-    
-            const commandsFromMain = {
-                openOnStartup:    (args) => { console.log(args[1]) },
-        
-                update_checking:        (args) => { console.log('Suche nach Updates...') },
-                update_available:       (args) => { console.log('Update gefunden: Version '+ JSON.parse(args[1]).version +'') },
-                update_not_available:   (args) => { console.log('Du bist auf dem neusten Stand!') },
-                update_downloaded:      (args) => { console.log('Update wurde heruntergeladen!Sie können das Programm jederzeit neustarten, um das Update zu installieren.') },
-                update_error:           (args) => { console.log('Update Fehler: '+ args[1]) },
-            }
-        
-            if( commandsFromMain.hasOwnProperty(args[0]) )
-            {
-                commandsFromMain[args[0]](args)
-            }
+        // Gets paths of files that should be opened on startup
+        ipcRenderer.on('open-on-startup', function(e, args) {
+            console.log(args.paths)
+        })
+
+        // Checks Github for updates
+        ipcRenderer.on('checking-for-updates', function() {
+            console.log('Suche nach Updates...')
+        })
+
+        // Notifies user of updates
+        ipcRenderer.on('updates-available', function(e, args) {
+            console.log(`Update gefunden: Version ${args.version}`)
+        })
+
+        // Notifies user of non existing updates
+        ipcRenderer.on('no-updates-available', function() {
+            console.log('Du bist auf dem neusten Stand!')
+        })
+
+        // Notifies user of finished download
+        ipcRenderer.on('updates-downloaded', function() {
+            console.log('Update wurde heruntergeladen!')
+        })
+
+        // Notifies user of update errors
+        ipcRenderer.on('update-errors', function(e, args) {
+            console.log(`Update Fehler: ${args.error}`)
         })
     },
     render: h => h(App)
 })
 
+
+
 /////////////////////
-// keyboard events //
+// Keyboard events //
 /////////////////////
 
 Mousetrap.bind(['ctrl+n','command+n'],             function(){ EventBus.$emit('new') })
@@ -103,28 +123,29 @@ Mousetrap.bind(['ctrl+z','command+z'],             function(){ EventBus.$emit('u
 Mousetrap.bind(['ctrl+y','ctrl+shift+z','command+shift+z'], function(){ EventBus.$emit('redo') })
 
 
+
 // When document has loaded, initialise
 document.onreadystatechange = () => {
     if (document.readyState === 'complete')
     {
         handleWindowControls()
 
-        // Show release notes after update
-        if (settings.get('currentVersion') !== app.vAppInfo)
+        // Shows release notes after update
+        if (settings.get('currentVersion') !== app.appVersion)
         {
-            app.GENERAL_UI.releaseNote = true
-            settings.set('currentVersion', app.vAppInfo)
+            app.setReleaseNoteUI(true)
+            settings.set('currentVersion', app.appVersion)
         }
 
         setTimeout(() => {
-            document.getElementById('preloader').classList.add('loaded')
-        }, app.GENERAL_UI.loadDelay)
+            app.setPreloaderUI(false)
+        }, app.loadDelay)
     }
 }
 
 function handleWindowControls ()
 {
-    // Make minimise/maximise/restore/close buttons work when they are clicked
+    // Makes minimise/maximise/restore/close buttons work when they are clicked
     document.getElementById('min-button').addEventListener('click', event => {
         remote.getCurrentWindow().minimize()
     })
@@ -141,7 +162,7 @@ function handleWindowControls ()
         remote.getCurrentWindow().close()
     })
 
-    // Toggle maximise/restore buttons when maximisation/unmaximisation occurs
+    // Toggles maximise/restore buttons when maximisation/unmaximisation occurs
     if (remote.getCurrentWindow().isMaximized())
     {
         document.body.classList.add('maximized')

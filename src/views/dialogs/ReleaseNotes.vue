@@ -1,8 +1,8 @@
 <template>
-    <div class="release-note-bg" :class="{'active' : show}">
+    <div class="release-note-bg">
         <div class="release-note-holder">
             <div class="release-image">
-                <span class="title">{{version}}</span>
+                <span class="title">{{updateName}}</span>
                 <div class="logo"></div>
             </div>
             <span class="headline">Willkommen in Struck!</span>
@@ -12,13 +12,25 @@
                 » Dateien speichern<br>
                 » Dateien als PNG oder JPG exportieren<br>
             </div>
-            <div class="close-release-note" @click="$emit('close')">Auf gehts!</div>
+            <div class="close-release-note" @click="setReleaseNoteUI(false)">Auf gehts!</div>
         </div>
     </div>
 </template>
 <script>
+    import { mapGetters, mapActions } from 'vuex'
+
     export default {
-        props: ['show', 'version'],
+        computed: {
+            ...mapGetters([
+                'updateName',
+                'releaseNoteUI',
+            ]),
+        },
+        methods: {
+            ...mapActions([
+                'setReleaseNoteUI',
+            ]),
+        },
     }
 </script>
 <style lang="sass" scoped>
@@ -29,14 +41,9 @@
         left: 0
         top: 0
         z-index: 10000
-        background: rgba(0,0,0,0)
-        pointer-events: none
+        background: rgba(0,0,0,0.7)
         transition: background 400ms ease-in-out
         transition: all 300ms ease-in-out
-
-        &.active
-            pointer-events: all
-            background: rgba(0,0,0,0.7)
 
         .release-note-holder
             width: calc(100% - 40px)
@@ -98,7 +105,7 @@
             .close-release-note
                 height: 40px
                 line-height: 40px
-                border-radius: 5px
+                border-radius: 50px
                 text-align: center
                 color: white
                 background: var(--primary)

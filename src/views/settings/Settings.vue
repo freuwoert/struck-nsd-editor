@@ -3,8 +3,30 @@
         <div class="container">
             <div class="title">Einstellungen</div>
             <div class="row">
-                <div class="ghost-button" @click="setSettingsUI(false)">Abbrechen</div>
-                <div class="button">Übernehmen</div>
+                <div class="name">Changelog:</div>
+                <div class="input-container">
+                    <div class="ghost-button" @click="setReleaseNoteUI(true)">Changelog öffnen</div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="name">Update:</div>
+                <div class="input-container text">{{updateName}}</div>
+            </div>
+            <div class="row">
+                <div class="name">App Version:</div>
+                <div class="input-container text">v{{appVersion}}</div>
+            </div>
+            <div class="row">
+                <div class="name">Electron Version:</div>
+                <div class="input-container text">v{{electronVersion}}</div>
+            </div>
+            <div class="row">
+                <div class="name">Entwickler:</div>
+                <div class="input-container text">Maurice Freuwört</div>
+            </div>
+            <div class="row">
+                <div class="ghost-button last-ghost-button" @click="setSettingsUI(false)">Abbrechen</div>
+                <div class="button last-button">Übernehmen</div>
             </div>
         </div>
     </div>
@@ -26,9 +48,17 @@
                 this.setSettingsUI(true)
             })
         },
+        computed: {
+            ...mapGetters([
+                'updateName',
+                'appVersion',
+                'electronVersion',
+            ]),
+        },
         methods: {
             ...mapActions([
                 'setSettingsUI',
+                'setReleaseNoteUI',
             ]),
         },
         components: {
@@ -76,6 +106,7 @@
                 margin: 10px 0
                 width: 100%
                 text-align: left
+                user-select: none
 
                 .name
                     width: 110px
@@ -90,10 +121,17 @@
                     width: calc(100% - 110px)
                     vertical-align: top
 
-                .button
+                    &.text
+                        font-size: 13px
+                        line-height: 20px
+                        padding: 5px 0
+                        font-weight: 800
+                        color: var(--color)
+
+                .last-button
                     float: right
 
-                .ghost-button
+                .last-ghost-button
                     margin-left: 15px
                     float: right
 </style>

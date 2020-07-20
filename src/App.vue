@@ -30,7 +30,7 @@
         </header>
 
         <!-- Preloader -->
-        <div id="preloader">
+        <div id="preloader" :class="{'loaded': !preloaderUI}">
             <div class="logo"></div>
             <spinner class="spinner" color="white" stroke="4"></spinner>
         </div>
@@ -40,7 +40,7 @@
         <!-- Overlays / Popups -->
         <settings v-show="settingsUI"></settings>
         <export v-show="exportUI"></export>
-        <!-- <release-notes :show="true" version="Sprout Update"></release-notes> -->
+        <release-notes v-show="releaseNoteUI"></release-notes>
     </div>
 </template>
 
@@ -61,10 +61,11 @@
         computed: {
             ...mapGetters([
                 'tabHandles',
+                'activeUUID',
+                'releaseNoteUI',
+                'preloaderUI',
                 'settingsUI',
                 'exportUI',
-                'view',
-                'activeUUID',
             ]),
         },
         methods: {

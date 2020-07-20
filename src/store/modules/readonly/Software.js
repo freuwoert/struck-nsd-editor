@@ -1,16 +1,15 @@
 const state = {
-    versionName: 'Over Engineered',
-    version: require('electron').remote.app.getVersion(),
-    electronVersion: process.versions.electron,
+    updateName: 'Creator Update',
+    appVersion: require('electron').remote.app.getVersion(),
     nodeVersion: process.versions.node,
+    electronVersion: process.versions.electron,
 }
 
 const getters = {
-    allAppInfo: (state) => state,
-    vAppInfo: (state) => state.version,
-    vNameAppInfo: (state) => state.versionName,
-    vElectronAppInfo: (state) => state.electronVersion,
-    vNodeAppInfo: (state) => state.nodeVersion,
+    updateName: (state) => state.updateName,
+    appVersion: (state) => state.appVersion,
+    nodeVersion: (state) => state.nodeVersion,
+    electronVersion: (state) => state.electronVersion,
 }
 
 const actions = {}

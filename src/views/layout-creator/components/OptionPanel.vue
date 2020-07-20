@@ -40,7 +40,7 @@
                 <div class="shortcut">Strg + Umschalt + E</div>
             </div>
 
-            <div class="copyright"><span>&#984550;</span> Maurice Freuwört</div>
+            <div class="copyright"><span>&#983412;</span> Maurice Freuwört</div>
         </div>
     </div>
 </template>
