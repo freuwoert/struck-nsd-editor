@@ -2,21 +2,21 @@
     <div class="structure" @click="selectElement($event)" :class="{'selected': selectedElements.includes(structure.uuid)}">
 
         <div class="command" v-if="structure.type === 'command'">
-            <div class="content" @click.stop @blur="blur($event)" contenteditable="true">{{structure.content}}</div>
+            <div class="content" @click.stop @blur="blur($event)" contenteditable="true" v-html="configuredSanitizeHTML(structure.content)"></div>
             <div @dragstart.prevent @click.stop @mousedown="mouseDown($event, 'below')" class="hitbox"></div>
         </div>
 
 
 
         <div class="call" v-if="structure.type === 'call'">
-            <div class="content" @click.stop @blur="blur($event)" contenteditable="true">{{structure.content}}</div>
+            <div class="content" @click.stop @blur="blur($event)" contenteditable="true" v-html="configuredSanitizeHTML(structure.content)"></div>
             <div @dragstart.prevent @click.stop @mousedown="mouseDown($event, 'below')" class="hitbox"></div>
         </div>
 
 
 
         <div class="break" v-if="structure.type === 'break'">
-            <div class="content" @click.stop @blur="blur($event)" contenteditable="true">{{structure.content}}</div>
+            <div class="content" @click.stop @blur="blur($event)" contenteditable="true" v-html="configuredSanitizeHTML(structure.content)"></div>
 
             <svg class="break-path" preserveAspectRatio="none" viewBox="0 0 20 48">
                 <polyline points="20 0 0 24 20 48"></polyline>
@@ -29,7 +29,7 @@
 
         <div class="while" v-if="structure.type === 'while'">
             <div class="content-container">
-                <div class="content" @click.stop @blur="blur($event)" contenteditable="true">{{structure.content}}</div>
+                <div class="content" @click.stop @blur="blur($event)" contenteditable="true" v-html="configuredSanitizeHTML(structure.content)"></div>
             </div>
 
             <div class="loop-container">
@@ -51,7 +51,7 @@
             </div>
 
             <div class="content-container">
-                <div class="content" @click.stop @blur="blur($event)" contenteditable="true">{{structure.content}}</div>
+                <div class="content" @click.stop @blur="blur($event)" contenteditable="true" v-html="configuredSanitizeHTML(structure.content)"></div>
             </div>
 
             <div @dragstart.prevent @click.stop @mousedown="mouseDown($event, 'below')" class="hitbox hitbox-bottom"></div>
@@ -61,7 +61,7 @@
 
         <div class="endless-loop" v-if="structure.type === 'endless-loop'">
             <div class="content-container">
-                <div class="content" @click.stop @blur="blur($event)" contenteditable="true">{{structure.content}}</div>
+                <div class="content" @click.stop @blur="blur($event)" contenteditable="true" v-html="configuredSanitizeHTML(structure.content)"></div>
             </div>
 
             <div class="loop-container">
@@ -77,12 +77,12 @@
 
         <div class="if" v-if="structure.type === 'if'">
             <div class="content-container">
-                <div class="content" @click.stop @blur="blur($event)" contenteditable="true">{{structure.content}}</div>
+                <div class="content" @click.stop @blur="blur($event)" contenteditable="true" v-html="configuredSanitizeHTML(structure.content)"></div>
             </div>
 
             <div class="condition-container">
                 <div class="condition-slot" v-for="(slot, i) in structure.slots" :key="i">
-                    <div class="label" @click.stop @blur="blur($event, trace+'-'+i+':N')" contenteditable="true">{{slot.content}}</div>
+                    <div class="label" @click.stop @blur="blur($event, trace+'-'+i+':N')" contenteditable="true" v-html="configuredSanitizeHTML(slot.content)"></div>
 
                     <structure v-for="(child, j) in slot.children" :key="j" :trace="trace+'-'+i+':'+j" :structure="child"></structure>
                     <div class="placeholder" v-show="slot.children.length == 0"></div>
@@ -102,12 +102,12 @@
 
         <div class="switch" v-if="structure.type === 'switch'">
             <div class="content-container">
-                <div class="content" @click.stop @blur="blur($event)" contenteditable="true">{{structure.content}}</div>
+                <div class="content" @click.stop @blur="blur($event)" contenteditable="true" v-html="configuredSanitizeHTML(structure.content)"></div>
             </div>
 
             <div class="condition-container">
                 <div class="condition-slot" v-for="(slot, i) in structure.slots" :key="i">
-                    <div class="label" @click.stop @blur="blur($event, trace+'-'+i+':N')" contenteditable="true">{{slot.content}}</div>
+                    <div class="label" @click.stop @blur="blur($event, trace+'-'+i+':N')" contenteditable="true" v-html="configuredSanitizeHTML(slot.content)"></div>
 
                     <structure v-for="(child, j) in slot.children" :key="j" :trace="trace+'-'+i+':'+j" :structure="child"></structure>
                     <div class="placeholder" v-show="slot.children.length == 0"></div>
@@ -129,6 +129,7 @@
     import StructureInput from '../../components/StructureInput'
     import { EventBus } from '../../../assets/js/event-bus.js'
     import { mapGetters, mapActions } from 'vuex'
+    import sanitizeHTML from 'sanitize-html'
 
     export default {
         name: 'structure',
@@ -157,8 +158,29 @@
             blur(event, trace = this.trace) {
                 if(event)
                 {
-                    this.setContent({trace, content: event.target.innerText})
+                    let content = event.target.innerHTML
+
+                    content = this.configuredSanitizeHTML(content)
+
+                    this.setContent({trace, content: event.target.innerHTML})
                 }
+            },
+
+            configuredSanitizeHTML(html) {
+
+                let cleanHTML = ''
+
+                try {
+                    cleanHTML = sanitizeHTML(html, {
+                        allowedTags: [ 'br' ],
+                        disallowedTagsMode: 'escape'
+                    })
+                } catch (error) {
+                    console.error("Couldn't sanitize HTML. Fallback to empty string. Error below:")
+                    console.error(error)
+                }
+
+                return cleanHTML
             },
 
             selectElement(event) {

@@ -210,6 +210,9 @@ const actions = {
         // Checks for content
         if( !payload.hasOwnProperty('content') ) return
 
+        // payload.content = payload.content.replace(/<br>/g, '\n')
+        console.log(payload.content)
+
 
         
         commit('setChanged_', true)

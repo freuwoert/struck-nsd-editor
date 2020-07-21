@@ -30,6 +30,7 @@
     "html-to-image": "^0.1.1",
     "lodash.clonedeep": "^4.5.0",
     "mousetrap": "^1.6.5",
+    "sanitize-html": "^1.27.1",
     "uuid": "^8.0.0",
     "vue": "^2.6.11",
     "vuex": "^3.3.0"
