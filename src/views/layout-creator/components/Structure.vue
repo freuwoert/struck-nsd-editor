@@ -236,17 +236,6 @@
         position: relative
         margin-bottom: -1px
 
-        // &:hover
-        //     .command,
-        //     .call,
-        //     .break,
-        //     .while,
-        //     .do-while,
-        //     .endless-loop,
-        //     .if,
-        //     .switch,
-        //         outline: 4px solid #aaaaaa
-
         &.selected
             .command,
             .call,
@@ -256,7 +245,7 @@
             .endless-loop,
             .if,
             .switch,
-                outline: 4px solid #77E3C7 !important
+                background: #77E3C7
 
         .command
             width: 100%
@@ -454,6 +443,12 @@
                     position: relative
                     padding-bottom: 1px
 
+                    // This prevents the child structure to be vertically oversized
+                    // And dont ask me why it is oversized
+                    > .structure
+                        display: inline-block
+                        width: 100%
+
                     > .hitbox-top
                         top: 24px
                         height: 20px
@@ -467,6 +462,8 @@
                         cursor: text
                         padding: 2px 4px
                         border-radius: 3px
+                        position: relative
+                        z-index: 1
 
                         &:hover
                             background: #1dd1a199
@@ -476,6 +473,11 @@
 
                     &:not(:last-of-type)
                         margin-right: -1px
+
+            > .hitbox-bottom
+                width: 100%
+                height: 20px
+                bottom: -20px
 
             > .hitbox-bottom
                 width: 100%
@@ -523,6 +525,12 @@
                     position: relative
                     padding-bottom: 1px
 
+                    // This prevents the child structure to be vertically oversized
+                    // And dont ask me why it is oversized
+                    > .structure
+                        display: inline-block
+                        width: 100%
+
                     > .hitbox-top
                         top: 24px
                         height: 20px
@@ -536,6 +544,8 @@
                         cursor: text
                         padding: 2px 4px
                         border-radius: 3px
+                        position: relative
+                        z-index: 1
 
                         &:hover
                             background: #1dd1a199

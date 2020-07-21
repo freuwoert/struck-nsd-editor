@@ -1,20 +1,17 @@
 import Vue from 'vue'
 import App from './App.vue'
 import store from '@/store/store'
+import Mousetrap from 'mousetrap'
+import settings from 'electron-settings'
 import { EventBus } from '@/assets/js/event-bus'
-import { ipcRenderer } from 'electron'
-
 import { mapGetters, mapActions } from 'vuex'
-
-const remote = require('electron').remote
-const settings = require('electron-settings')
-const Mousetrap = require('mousetrap')
+import { ipcRenderer, remote } from 'electron'
 
 
 
 Vue.config.productionTip = false
 
-const app = new Vue({
+new Vue({
     el: '#app',
     store,
     computed: {
@@ -34,10 +31,15 @@ const app = new Vue({
             'setReleaseNoteUI',
         ])
     },
+    
+    // Mounted - in this case - functions as our main on-load event
     mounted() {
+
         // Starts up the app with one tab
         // ToDo: only if startup isn't done via a file
         this.addTab({selectOnCreation: true})
+
+
 
         /////////////////////////////////////////////////////////////
         // All events regarding menu options must be put down here //
@@ -64,6 +66,8 @@ const app = new Vue({
                 ...this.selectedElements
             ]})
         })
+
+
 
         //////////////////////////////
         // Events regarding ipcMain //
@@ -101,6 +105,25 @@ const app = new Vue({
         ipcRenderer.on('update-errors', function(e, args) {
             console.log(`Update Fehler: ${args.error}`)
         })
+
+
+
+        /////////////////////////
+        // Misc initialization //
+        /////////////////////////
+
+        // Initializes window controls
+        initializeWindowControls()
+
+        // Shows release notes after update
+        if( settings.get('currentVersion') !== this.appVersion )
+        {
+            this.setReleaseNoteUI(true)
+            settings.set('currentVersion', this.appVersion)
+        }
+
+        // Shows app
+        setTimeout(() => { this.setPreloaderUI(false) }, this.loadDelay)
     },
     render: h => h(App)
 })
@@ -124,73 +147,57 @@ Mousetrap.bind(['ctrl+y','ctrl+shift+z','command+shift+z'], function(){ EventBus
 
 
 
-// When document has loaded, initialise
-document.onreadystatechange = () => {
-    if (document.readyState === 'complete')
-    {
-        handleWindowControls()
-
-        // Shows release notes after update
-        if (settings.get('currentVersion') !== app.appVersion)
-        {
-            app.setReleaseNoteUI(true)
-            settings.set('currentVersion', app.appVersion)
-        }
-
-        setTimeout(() => {
-            app.setPreloaderUI(false)
-        }, app.loadDelay)
-    }
-}
-
-function handleWindowControls ()
+function initializeWindowControls()
 {
-    // Makes minimise/maximise/restore/close buttons work when they are clicked
-    document.getElementById('min-button').addEventListener('click', event => {
-        remote.getCurrentWindow().minimize()
-    })
+    // Sets shorthand vars
+    const win = remote.getCurrentWindow()
+    const body = document.body
 
-    document.getElementById('max-button').addEventListener('click', event => {
-        remote.getCurrentWindow().maximize()
-    })
+    // Gets buttons
+    const buttonMin = document.getElementById('min-button')
+    const buttonMax = document.getElementById('max-button')
+    const buttonRestore = document.getElementById('restore-button')
+    const buttonClose = document.getElementById('close-button')
 
-    document.getElementById('restore-button').addEventListener('click', event => {
-        remote.getCurrentWindow().unmaximize()
-    })
 
-    document.getElementById('close-button').addEventListener('click', event => {
-        remote.getCurrentWindow().close()
-    })
 
-    // Toggles maximise/restore buttons when maximisation/unmaximisation occurs
-    if (remote.getCurrentWindow().isMaximized())
+    // Toggles maximise / restore buttons when maximisation or unmaximisation occurs
+    function toggleButtons()
     {
-        document.body.classList.add('maximized')
-    }
-    else
-    {
-        document.body.classList.remove('maximized')
+        body.classList.remove('maximized')
+
+        if( win.isMaximized() )
+        {
+            body.classList.add('maximized')
+        }
     }
 
-    remote.getCurrentWindow().on('maximize', function () {
-        if (remote.getCurrentWindow().isMaximized())
-        {
-            document.body.classList.add('maximized')
-        }
-        else
-        {
-            document.body.classList.remove('maximized')
-        }
+    // Executes on load
+    toggleButtons()
+
+    // Makes minimise, maximise, restore and close buttons work when they are clicked
+    // ToDo: remove event listeners
+    buttonMin.addEventListener('click', () => {
+        win.minimize()
     })
 
-    remote.getCurrentWindow().on('unmaximize', function () {
-        if (remote.getCurrentWindow().isMaximized())
-        {
-            document.body.classList.add('maximized')
-        }
-        else
-        {
-            document.body.classList.remove('maximized')
-        }
+    buttonMax.addEventListener('click', () => {
+        win.maximize()
+    })
+
+    buttonRestore.addEventListener('click', () => {
+        win.unmaximize()
+    })
+
+    buttonClose.addEventListener('click', () => {
+        win.close()
+    })
+
+    win.on('maximize', () => {
+        toggleButtons()
+    })
+
+    win.on('unmaximize', () => {
+        toggleButtons()
     })
 }

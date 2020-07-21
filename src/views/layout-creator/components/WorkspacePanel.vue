@@ -55,7 +55,7 @@
             left: 0
             width: 100%
             height: calc(100% - 5px)
-            padding: 50px 0 100px
+            padding: 50px 50px 100px
             overflow: auto
             text-align: center
             user-select: none
