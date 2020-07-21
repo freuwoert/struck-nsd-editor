@@ -368,7 +368,6 @@ const actions = {
 
 
 
-
         switch (payload.format)
         {
             case 'PNG': exportToPNG(); break
@@ -577,7 +576,7 @@ const mutations = {
             for (let i = 0; i < structures.children.length; i++)
             {
                 const structure = structures.children[i]
-                
+
                 // Checks if current UUID is selected to be deleted
                 if( param.elementUUIDs.includes(structure.uuid) )
                 {
@@ -585,7 +584,7 @@ const mutations = {
                     structures.children.splice(i, 1)
 
                     // No need for further recursion because parent element just got deleted
-                    return
+                    continue
                 }
                 
                 if( structure.hasOwnProperty('slots') )
@@ -596,12 +595,10 @@ const mutations = {
                     }
                 }
     
-                if( structure.hasOwnProperty('children') )
+                else if( structure.hasOwnProperty('children') )
                 {
                     recursiveDelete(structure)
                 }
-    
-                return
             }
         }
 

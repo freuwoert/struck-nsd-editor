@@ -17,7 +17,7 @@
             <div class="content">{{structure.content}}</div>
 
             <svg class="break-path" preserveAspectRatio="none" viewBox="0 0 20 48">
-                <polyline points="20 0 0 24 20 48"></polyline>
+                <polyline stroke="#000" stroke-width="0.7" fill="none" points="20 0 0 24 20 48"></polyline>
             </svg>
         </div>
 
