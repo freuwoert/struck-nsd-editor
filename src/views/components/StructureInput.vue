@@ -131,21 +131,25 @@
         height: 200px
         width: 200px
         border-radius: 100%
-        background: var(--background)
+        background: transparent
         position: fixed
         top: 0
         left: 0
         transform: translate(-50%, -50%)
         z-index: 100000
-        filter: drop-shadow(0px 6px 4px rgba(0, 0, 0, 0.3))
+        filter: drop-shadow(0px 2px 2px rgba(0, 0, 0, 0.3))
         user-select: none
 
         &::after
-            content: ''
+            content: '󰐕'
+            font-family: 'Material Icons'
+            color: var(--color)
+            font-size: 20px
             height: 60px
             width: 60px
+            line-height: 60px
             border-radius: 100%
-            background: #eee
+            background: var(--background)
             position: absolute
             top: 50%
             left: 50%
@@ -167,65 +171,65 @@
                 background: var(--primary)
                 position: absolute
                 top: -2px
-                left: 28px
+                left: 22px
 
         .item
-            height: 20px
-            line-height: 20px
-            font-size: 9px
-            font-weight: 500
+            height: 30px
+            line-height: 30px
+            font-size: 10px
+            font-weight: 800
             letter-spacing: 1px
+            padding: 0 15px
+            border-radius: 30px
             position: absolute
             z-index: 1
-            color: var(--color-bright)
+            background: var(--background)
+            color: var(--color)
             text-transform: uppercase
+            transition: all 100ms
+            --dd: 29%
 
             &.selected
-                color: var(--primary)
-                font-size: 11px
-                font-weight: 800
+                background: var(--primary)
+                color: white
 
             &.top
-                top: 10px
+                top: 3px
                 left: 50%
                 transform: translateX(-50%)
 
             &.top-left
-                top: 29%
-                left: 25%
-                transform: translate(-50%, -50%)
+                top: var(--dd)
+                right: calc(50% + 20px)
+                transform: translateY(-50%)
 
             &.left
                 top: 50%
-                left: 0
+                right: calc(50% + 40px)
                 transform: translateY(-50%)
-                width: 60px
-                text-align: center
 
             &.bottom-left
-                bottom: 29%
-                left: 25%
-                transform: translate(-50%, 50%)
+                bottom: var(--dd)
+                right: calc(50% + 20px)
+                transform: translateY(50%)
 
             &.bottom
-                bottom: 10px
+                bottom: 3px
                 left: 50%
                 transform: translateX(-50%)
 
             &.bottom-right
-                bottom: 29%
-                right: 23%
-                transform: translate(50%, 50%)
+                bottom: var(--dd)
+                left: calc(50% + 20px)
+                transform: translateY(50%)
 
             &.right
                 top: 50%
-                right: 0
+                left: calc(50% + 40px)
                 transform: translateY(-50%)
-                width: 60px
-                text-align: center
 
             &.top-right
-                top: 29%
-                right: 23%
-                transform: translate(50%, -50%)
+                top: var(--dd)
+                left: calc(50% + 20px)
+                transform: translateY(-50%)
 </style>

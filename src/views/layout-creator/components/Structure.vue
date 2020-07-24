@@ -100,7 +100,7 @@
 
 
 
-        <div class="switch" v-if="structure.type === 'switch'">
+        <div class="switch" v-if="structure.type === 'switch'" @contextmenu="rightClick($event)">
             <div class="content-container">
                 <div class="content" @click.stop @blur="blur($event)" contenteditable="true" v-html="configuredSanitizeHTML(structure.content)"></div>
             </div>
@@ -186,6 +186,11 @@
             selectElement(event) {
                 event.stopPropagation()
                 this.selectElements({uuids: [this.structure.uuid], clearPrevious: !event.ctrlKey})
+            },
+
+            rightClick(event) {
+                event.stopPropagation()
+                console.log(event)
             }
         },
         components: {
@@ -519,6 +524,7 @@
                 min-height: 50px
                 width: calc(100% + 2px)
                 margin: -1px
+                position: relative
 
                 .condition-slot
                     flex: 1

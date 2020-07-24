@@ -10,6 +10,12 @@
 
                 <div class="placeholder" v-show="docStructures.children.length == 0"></div>
             </div>
+
+            <div class="context-menu">
+                <div class="item">Element löschen</div>
+                <div class="divider"></div>
+                <div class="item">Case hinzufügen</div>
+            </div>
         </div>
     </div>
 </template>
@@ -48,6 +54,43 @@
         background: var(--dark-background)
         overflow: hidden
         position: relative
+
+        .context-menu
+            background: var(--background)
+            filter: drop-shadow(0px 2px 2px rgba(0, 0, 0, 0.3))
+            border-radius: 10px
+            overflow: hidden
+            position: fixed
+            top: 0
+            left: 0
+            padding: 10px 0
+            user-select: none
+            z-index: 100
+
+            .item
+                height: 30px
+                min-width: 190px
+                display: block
+                font-size: 14px
+                font-weight: 600
+                text-align: left
+                line-height: 30px
+                border-radius: 5px
+                padding: 0 15px
+                color: var(--color)
+
+                &:hover:not(.disabled)
+                    background: var(--primary)
+                    color: white
+                    cursor: pointer
+
+                &.disabled
+                    color: var(--color-light)
+
+            .divider
+                width: calc(100% - 30px)
+                border-bottom: 1px solid var(--color-lighter)
+                margin: 10px 15px
 
         .center
             position: absolute
