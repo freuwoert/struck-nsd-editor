@@ -11,7 +11,7 @@
                 <div class="placeholder" v-show="docStructures.children.length == 0"></div>
             </div>
 
-            <div class="context-menu">
+            <div class="context-menu" ref="contextMenuDOM" v-show="contextMenuUI" :style="'left: '+contextMenu[0]+'px; top: '+contextMenu[1]+'px;'">
                 <div class="item">Element löschen</div>
                 <div class="divider"></div>
                 <div class="item">Case hinzufügen</div>
@@ -29,17 +29,43 @@
     export default {
         computed: {
             ...mapGetters([
-                'docStructures'
+                'docStructures',
+                'contextMenuUI',
+                'contextMenu',
             ]),
+        },
+        mounted() {
+            window.addEventListener('mousedown', (event) => {
+                this.blurContextMenu()
+            })
+
+            window.addEventListener('contextmenu', (event) => {
+                this.blurContextMenu()
+            })
         },
         methods: {
             ...mapActions([
-                'createElement'
+                'createElement',
+                'setContextMenuUI',
             ]),
 
             mouseDown(event) {
                 EventBus.$emit('toggle-create-element', {event, trace: 'N:0', position: 'above'})
-            }
+            },
+
+            blurContextMenu() {
+                let blur = true
+
+                for (const DOM of event.path)
+                {
+                    if( DOM == this.$refs.contextMenuDOM ) blur = false
+                }
+                
+                if( blur )
+                {
+                    this.setContextMenuUI(false)
+                }
+            },
         },
         components: {
             Colorpicker,

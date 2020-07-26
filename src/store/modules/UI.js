@@ -4,10 +4,14 @@ const state = {
     preloader: true,
     settings: false,
     export: false,
+    contextMenu: true,
+    context: [300, 200],
 }
 
 const getters = {
     loadDelay: (state) => state.loadDelay,
+    contextMenu: (state) => state.context,
+    contextMenuUI: (state) => state.contextMenu,
     releaseNoteUI: (state) => state.releaseNote,
     preloaderUI: (state) => state.preloader,
     settingsUI: (state) => state.settings,
@@ -15,6 +19,22 @@ const getters = {
 }
 
 const actions = {
+
+    setContextMenu({ commit }, payload)
+    {
+        if( typeof payload === 'object' )
+        {
+            commit('setContextMenu_', payload)
+        }
+    },
+
+    setContextMenuUI({ commit }, payload)
+    {
+        if( [true, false].includes(payload) )
+        {
+            commit('setContextMenuUI_', payload)
+        }
+    },
 
     setReleaseNoteUI({ commit }, payload)
     {
@@ -50,6 +70,14 @@ const actions = {
 }
 
 const mutations = {
+
+    setContextMenu_: (state, param) => {
+        state.context = param
+    },
+
+    setContextMenuUI_: (state, param) => {
+        state.contextMenu = param
+    },
 
     setReleaseNoteUI_: (state, param) => {
         state.releaseNote = param
