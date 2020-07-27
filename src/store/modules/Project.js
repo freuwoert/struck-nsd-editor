@@ -156,6 +156,7 @@ const actions = {
         
         // let path = 'state.document.structures'
         // let layers = null
+        const uuid = require('uuid')
 
 
 
@@ -180,7 +181,19 @@ const actions = {
         // Assign element UUID
         if( !payload.element.uuid )
         {
-            payload.element.uuid = require('uuid').v4()
+            payload.element.uuid = uuid.v4()
+        }
+
+        // Assign slot UUIDs
+        if( ['switch', 'if'].includes(payload.element.type) )
+        {
+            for (let i = 0; i < payload.element.slots.length; i++)
+            {
+                if( !payload.element.slots[i].uuid )
+                {
+                    payload.element.slots[i].uuid = uuid.v4()
+                }
+            }
         }
         
 
@@ -194,7 +207,7 @@ const actions = {
         })
     },
 
-    deleteElements({ commit, state, getters }, payload) {
+    deleteElements({ commit }, payload) {
 
         // Checks for elementUUIDs
         if( !payload.hasOwnProperty('elementUUIDs') ) return
@@ -210,9 +223,6 @@ const actions = {
         // Checks for content
         if( !payload.hasOwnProperty('content') ) return
 
-        // payload.content = payload.content.replace(/<br>/g, '\n')
-        console.log(payload.content)
-
 
         
         commit('setChanged_', true)
@@ -223,7 +233,16 @@ const actions = {
         })
     },
 
-    selectElements({ commit, state }, payload) {
+    addSlot({ commit, getters }, payload) {
+
+        commit('setChanged_', true)
+        commit('setBackgroundChanged_', {index: getters.activeIndex , changed: true})
+        commit('addSlot_', {
+            uuid: payload,
+        })
+    },
+
+    selectElements({ commit }, payload) {
         
         // Checks for uuids
         if( !payload.hasOwnProperty('uuids') ) return
@@ -234,7 +253,7 @@ const actions = {
         commit('selectElements_', { uuids: [...payload.uuids], clearPrevious: payload.clearPrevious })
     },
 
-    deselectElements({ commit, state }, payload) {
+    deselectElements({ commit }, payload) {
         
         if( !payload.uuids || payload.uuids.length === 0 )
         {
@@ -539,6 +558,46 @@ const mutations = {
         location.content = JSON.parse(JSON.stringify(param.content))
     },
 
+    addSlot_: (state, param) => {
+
+        let recursiveUuidSearch = (structures) => {
+
+            for (let i = 0; i < structures.children.length; i++)
+            {
+                const structure = structures.children[i]
+
+                // Checks if element has the searched uuid
+                if( param.uuid === structure.uuid )
+                {
+                    // Adds slot
+                    structure.slots.unshift({
+                        children: [],
+                        content: 'case',
+                        uuid: require('uuid').v4()
+                    })
+
+                    // No need for further recursion because element was found
+                    return
+                }
+                
+                if( structure.hasOwnProperty('slots') )
+                {
+                    for (const slot of structure.slots)
+                    {
+                        recursiveUuidSearch(slot)
+                    }
+                }
+    
+                else if( structure.hasOwnProperty('children') )
+                {
+                    recursiveUuidSearch(structure)
+                }
+            }
+        }
+
+        recursiveUuidSearch(state.document.structures)
+    },
+
     selectElements_: (state, param) => {
         if( param.clearPrevious )
         {
@@ -592,9 +651,19 @@ const mutations = {
                 
                 if( structure.hasOwnProperty('slots') )
                 {
-                    for (const slot of structure.slots)
+                    for (let j = 0; j < structure.slots.length; j++)
                     {
-                        recursiveDelete(slot)
+                        const slot = structure.slots[j]
+
+                        // Checks if slot is selected and if not less than two slots
+                        if( param.elementUUIDs.includes(slot.uuid) && structure.slots.length > 2 )
+                        {
+                            structure.slots.splice(j, 1)
+                        }
+                        else
+                        {
+                            recursiveDelete(slot)
+                        }
                     }
                 }
     

@@ -4,13 +4,15 @@ const state = {
     preloader: true,
     settings: false,
     export: false,
-    contextMenu: true,
-    context: [300, 200],
+    contextMenu: false,
+    context: [0, 0],
+    contextInfo: {context: null, uuid: null},
 }
 
 const getters = {
     loadDelay: (state) => state.loadDelay,
     contextMenu: (state) => state.context,
+    contextInfo: (state) => state.contextInfo,
     contextMenuUI: (state) => state.contextMenu,
     releaseNoteUI: (state) => state.releaseNote,
     preloaderUI: (state) => state.preloader,
@@ -25,6 +27,14 @@ const actions = {
         if( typeof payload === 'object' )
         {
             commit('setContextMenu_', payload)
+        }
+    },
+
+    setContextInfo({ commit }, payload)
+    {
+        if( typeof payload === 'object' )
+        {
+            commit('setContextInfo_', payload)
         }
     },
 
@@ -73,6 +83,10 @@ const mutations = {
 
     setContextMenu_: (state, param) => {
         state.context = param
+    },
+
+    setContextInfo_: (state, param) => {
+        state.contextInfo = param
     },
 
     setContextMenuUI_: (state, param) => {

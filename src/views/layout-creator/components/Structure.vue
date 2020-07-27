@@ -1,51 +1,51 @@
 <template>
     <div class="structure" @click="selectElement($event)" :class="{'selected': selectedElements.includes(structure.uuid)}">
 
-        <div class="command" v-if="structure.type === 'command'" @contextmenu="rightClick($event)">
+        <div class="command" v-if="structure.type === 'command'" @contextmenu="rightClick($event, {context: 'element', uuid: structure.uuid})">
             <div class="content" @click.stop @blur="blur($event)" contenteditable="true" v-html="configuredSanitizeHTML(structure.content)"></div>
-            <div @dragstart.prevent @click.stop @mousedown="mouseDown($event, 'below')" class="hitbox"></div>
+            <div class="hitbox" @dragstart.prevent @click.stop @mousedown="mouseDown($event, 'below')"></div>
         </div>
 
 
 
-        <div class="call" v-if="structure.type === 'call'" @contextmenu="rightClick($event)">
+        <div class="call" v-if="structure.type === 'call'" @contextmenu="rightClick($event, {context: 'element', uuid: structure.uuid})">
             <div class="content" @click.stop @blur="blur($event)" contenteditable="true" v-html="configuredSanitizeHTML(structure.content)"></div>
-            <div @dragstart.prevent @click.stop @mousedown="mouseDown($event, 'below')" class="hitbox"></div>
+            <div class="hitbox" @dragstart.prevent @click.stop @mousedown="mouseDown($event, 'below')"></div>
         </div>
 
 
 
-        <div class="break" v-if="structure.type === 'break'" @contextmenu="rightClick($event)">
+        <div class="break" v-if="structure.type === 'break'" @contextmenu="rightClick($event, {context: 'element', uuid: structure.uuid})">
             <div class="content" @click.stop @blur="blur($event)" contenteditable="true" v-html="configuredSanitizeHTML(structure.content)"></div>
 
             <svg class="break-path" preserveAspectRatio="none" viewBox="0 0 20 48">
                 <polyline points="20 0 0 24 20 48"></polyline>
             </svg>
 
-            <div @dragstart.prevent @click.stop @mousedown="mouseDown($event, 'below')" class="hitbox"></div>
+            <div class="hitbox" @dragstart.prevent @click.stop @mousedown="mouseDown($event, 'below')"></div>
         </div>
 
 
 
-        <div class="while" v-if="structure.type === 'while'" @contextmenu="rightClick($event)">
+        <div class="while" v-if="structure.type === 'while'" @contextmenu="rightClick($event, {context: 'element', uuid: structure.uuid})">
             <div class="content-container">
                 <div class="content" @click.stop @blur="blur($event)" contenteditable="true" v-html="configuredSanitizeHTML(structure.content)"></div>
             </div>
 
             <div class="loop-container">
-                <div @dragstart.prevent @click.stop @mousedown="mouseDown($event, 'into')" class="hitbox hitbox-top"></div>
+                <div class="hitbox hitbox-top" @dragstart.prevent @click.stop @mousedown="mouseDown($event, 'into')"></div>
                 <structure v-for="(child, i) in structure.children" :key="i" :trace="trace+'-N:'+i" :structure="child"></structure>
                 <div class="placeholder" v-show="structure.children.length == 0"></div>
             </div>
 
-            <div @dragstart.prevent @click.stop @mousedown="mouseDown($event, 'below')" class="hitbox hitbox-bottom"></div>
+            <div class="hitbox hitbox-bottom" @dragstart.prevent @click.stop @mousedown="mouseDown($event, 'below')"></div>
         </div>
 
 
 
-        <div class="do-while" v-if="structure.type === 'do-while'" @contextmenu="rightClick($event)">
+        <div class="do-while" v-if="structure.type === 'do-while'" @contextmenu="rightClick($event, {context: 'element', uuid: structure.uuid})">
             <div class="loop-container">
-                <div @dragstart.prevent @click.stop @mousedown="mouseDown($event, 'into')" class="hitbox hitbox-top"></div>
+                <div class="hitbox hitbox-top" @dragstart.prevent @click.stop @mousedown="mouseDown($event, 'into')"></div>
                 <structure v-for="(child, i) in structure.children" :key="i" :trace="trace+'-N:'+i" :structure="child"></structure>
                 <div class="placeholder" v-show="structure.children.length == 0"></div>
             </div>
@@ -54,28 +54,28 @@
                 <div class="content" @click.stop @blur="blur($event)" contenteditable="true" v-html="configuredSanitizeHTML(structure.content)"></div>
             </div>
 
-            <div @dragstart.prevent @click.stop @mousedown="mouseDown($event, 'below')" class="hitbox hitbox-bottom"></div>
+            <div class="hitbox hitbox-bottom" @dragstart.prevent @click.stop @mousedown="mouseDown($event, 'below')"></div>
         </div>
 
 
 
-        <div class="endless-loop" v-if="structure.type === 'endless-loop'" @contextmenu="rightClick($event)">
+        <div class="endless-loop" v-if="structure.type === 'endless-loop'" @contextmenu="rightClick($event, {context: 'element', uuid: structure.uuid})">
             <div class="content-container">
                 <div class="content" @click.stop @blur="blur($event)" contenteditable="true" v-html="configuredSanitizeHTML(structure.content)"></div>
             </div>
 
             <div class="loop-container">
-                <div @dragstart.prevent @click.stop @mousedown="mouseDown($event, 'into')" class="hitbox hitbox-top"></div>
+                <div class="hitbox hitbox-top" @dragstart.prevent @click.stop @mousedown="mouseDown($event, 'into')"></div>
                 <structure v-for="(child, i) in structure.children" :key="i" :trace="trace+'-N:'+i" :structure="child"></structure>
                 <div class="placeholder" v-show="structure.children.length == 0"></div>
             </div>
 
-            <div @dragstart.prevent @click.stop @mousedown="mouseDown($event, 'below')" class="hitbox hitbox-bottom"></div>
+            <div class="hitbox hitbox-bottom" @dragstart.prevent @click.stop @mousedown="mouseDown($event, 'below')"></div>
         </div>
 
 
 
-        <div class="if" v-if="structure.type === 'if'" @contextmenu="rightClick($event)">
+        <div class="if" v-if="structure.type === 'if'" @contextmenu="rightClick($event, {context: 'element', uuid: structure.uuid})">
             <div class="content-container">
                 <div class="content" @click.stop @blur="blur($event)" contenteditable="true" v-html="configuredSanitizeHTML(structure.content)"></div>
             </div>
@@ -87,7 +87,7 @@
                     <structure v-for="(child, j) in slot.children" :key="j" :trace="trace+'-'+i+':'+j" :structure="child"></structure>
                     <div class="placeholder" v-show="slot.children.length == 0"></div>
 
-                    <div @dragstart.prevent @click.stop @mousedown="mouseDown($event, 'into', trace+'-'+i+':N')" class="hitbox hitbox-top"></div>
+                    <div class="hitbox hitbox-top" @dragstart.prevent @click.stop @mousedown="mouseDown($event, 'into', trace+'-'+i+':N')"></div>
                 </div>
             </div>
 
@@ -95,24 +95,24 @@
                 <polyline points="0 0 200 40 400 0"></polyline>
             </svg> -->
 
-            <div @dragstart.prevent @click.stop @mousedown="mouseDown($event, 'below')" class="hitbox hitbox-bottom"></div>
+            <div class="hitbox hitbox-bottom" @dragstart.prevent @click.stop @mousedown="mouseDown($event, 'below')"></div>
         </div>
 
 
 
-        <div class="switch" v-if="structure.type === 'switch'" @contextmenu="rightClick($event)">
+        <div class="switch" v-if="structure.type === 'switch'" @contextmenu="rightClick($event, {context: 'switch', uuid: structure.uuid})">
             <div class="content-container">
                 <div class="content" @click.stop @blur="blur($event)" contenteditable="true" v-html="configuredSanitizeHTML(structure.content)"></div>
             </div>
 
             <div class="condition-container">
-                <div class="condition-slot" v-for="(slot, i) in structure.slots" :key="i">
+                <div class="condition-slot" v-for="(slot, i) in structure.slots" :key="i" @click="selectElement($event, slot.uuid)" @contextmenu="rightClick($event, {context: 'switch-slot', uuid: slot.uuid})" :class="{'selected': selectedElements.includes(slot.uuid)}">
                     <div class="label" @click.stop @blur="blur($event, trace+'-'+i+':N')" contenteditable="true" v-html="configuredSanitizeHTML(slot.content)"></div>
 
                     <structure v-for="(child, j) in slot.children" :key="j" :trace="trace+'-'+i+':'+j" :structure="child"></structure>
                     <div class="placeholder" v-show="slot.children.length == 0"></div>
 
-                    <div @dragstart.prevent @click.stop @mousedown="mouseDown($event, 'into', trace+'-'+i+':N')" class="hitbox hitbox-top"></div>
+                    <div class="hitbox hitbox-top" @dragstart.prevent @click.stop @mousedown="mouseDown($event, 'into', trace+'-'+i+':N')"></div>
                 </div>
             </div>
 
@@ -120,7 +120,7 @@
                 <polyline points="0 0 200 40 400 0"></polyline>
             </svg> -->
 
-            <div @dragstart.prevent @click.stop @mousedown="mouseDown($event, 'below')" class="hitbox hitbox-bottom"></div>
+            <div class="hitbox hitbox-bottom" @dragstart.prevent @click.stop @mousedown="mouseDown($event, 'below')"></div>
         </div>
     </div>
 </template>
@@ -150,22 +150,23 @@
                 'setContent',
                 'selectElements',
                 'setContextMenu',
+                'setContextInfo',
                 'setContextMenuUI',
             ]),
 
             mouseDown(event, position, trace = this.trace) {
-                EventBus.$emit('toggle-create-element', {event, trace, position})
+
+                // Checks if left mouse button is down
+                if( event.buttons === 1 ) EventBus.$emit('toggle-create-element', {event, trace, position})
             },
 
             blur(event, trace = this.trace) {
-                if(event)
-                {
-                    let content = event.target.innerHTML
 
-                    content = this.configuredSanitizeHTML(content)
+                if( !event ) return
 
-                    this.setContent({trace, content: event.target.innerHTML})
-                }
+                let content = this.configuredSanitizeHTML(event.target.innerHTML)
+
+                this.setContent({trace, content})
             },
 
             configuredSanitizeHTML(html) {
@@ -185,16 +186,18 @@
                 return cleanHTML
             },
 
-            selectElement(event) {
+            selectElement(event, uuid = this.structure.uuid) {
+
                 event.stopPropagation()
-                this.selectElements({uuids: [this.structure.uuid], clearPrevious: !event.ctrlKey})
+                this.selectElements({uuids: [uuid], clearPrevious: !event.ctrlKey})
             },
 
-            rightClick(event) {
+            rightClick(event, info = {context: null, uuid: null}) {
+
                 event.stopPropagation()
                 this.setContextMenu([event.screenX, event.screenY])
                 this.setContextMenuUI(true)
-                console.log(event)
+                this.setContextInfo(info)
             }
         },
         components: {
@@ -534,6 +537,20 @@
                     flex: 1
                     position: relative
                     padding-bottom: 1px
+                    border-radius: 3px 3px 0 0
+
+                    &.selected
+                        background: #77E3C7
+
+                        .command,
+                        .call,
+                        .break,
+                        .while,
+                        .do-while,
+                        .endless-loop,
+                        .if,
+                        .switch,
+                            background: #77E3C7
 
                     // This prevents the child structure to be vertically oversized
                     // And dont ask me why it is oversized

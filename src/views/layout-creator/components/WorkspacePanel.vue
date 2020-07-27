@@ -12,9 +12,10 @@
             </div>
 
             <div class="context-menu" ref="contextMenuDOM" v-show="contextMenuUI" :style="'left: '+contextMenu[0]+'px; top: '+contextMenu[1]+'px;'">
-                <div class="item">Element löschen</div>
+                <div class="item" :class="{'disabled': contextInfo.context === 'switch-slot'}" @click="deleteElement()">Element löschen</div>
                 <div class="divider"></div>
-                <div class="item">Case hinzufügen</div>
+                <div class="item" :class="{'disabled': contextInfo.context !== 'switch'}" @click="addCase()">Case hinzufügen</div>
+                <div class="item" :class="{'disabled': contextInfo.context !== 'switch-slot'}" @click="deleteElement()">Case löschen</div>
             </div>
         </div>
     </div>
@@ -32,28 +33,31 @@
                 'docStructures',
                 'contextMenuUI',
                 'contextMenu',
+                'contextInfo',
             ]),
         },
         mounted() {
             window.addEventListener('mousedown', (event) => {
-                this.blurContextMenu()
+                this.blurContextMenu(event)
             })
 
             window.addEventListener('contextmenu', (event) => {
-                this.blurContextMenu()
+                this.blurContextMenu(event)
             })
         },
         methods: {
             ...mapActions([
                 'createElement',
                 'setContextMenuUI',
+                'deleteElements',
+                'addSlot',
             ]),
 
             mouseDown(event) {
                 EventBus.$emit('toggle-create-element', {event, trace: 'N:0', position: 'above'})
             },
 
-            blurContextMenu() {
+            blurContextMenu(event) {
                 let blur = true
 
                 for (const DOM of event.path)
@@ -66,6 +70,17 @@
                     this.setContextMenuUI(false)
                 }
             },
+
+            // Context menu methods
+            addCase() {
+                this.addSlot(this.contextInfo.uuid)
+                this.setContextMenuUI(false)
+            },
+
+            deleteElement() {
+                this.deleteElements({elementUUIDs: [this.contextInfo.uuid]})
+                this.setContextMenuUI(false)
+            }
         },
         components: {
             Colorpicker,
@@ -112,6 +127,7 @@
 
                 &.disabled
                     color: var(--color-light)
+                    pointer-events: none
 
             .divider
                 width: calc(100% - 30px)
