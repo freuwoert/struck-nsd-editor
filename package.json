@@ -1,7 +1,7 @@
 {
   "name": "struck-nsd-editor",
   "description": "Easy to use NSD editor",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "main": "background.js",
   "scripts": {
     "electron:build": "vue-cli-service electron:build",

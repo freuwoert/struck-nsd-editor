@@ -7,10 +7,13 @@
             </div>
             <span class="headline">Willkommen in Struck!</span>
             <div class="release-note-container">
-                In dieser Version von <b>Struck</b> kannst du nun auch:<br>
-                » Elemente hinzufügen und löschen<br>
+                Was ist neu:<br>
+                » Du kannst nun auch Cases hinzufügen und löschen<br>
+                » Es gibt nun ein Kontext-Menü<br>
+                » Diverse Bugs wurden gefixt<br>
+                <!-- » Elemente hinzufügen und löschen<br>
                 » Dateien speichern<br>
-                » Dateien als PNG oder JPG exportieren<br>
+                » Dateien als PNG oder JPG exportieren<br> -->
             </div>
             <div class="close-release-note" @click="setReleaseNoteUI(false)">Auf gehts!</div>
         </div>
