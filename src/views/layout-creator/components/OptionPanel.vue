@@ -3,8 +3,8 @@
         <div class="more" title="Menü     Strg + Umschalt + M" @click="toggleMoreMenu()">&#983900;</div>
 
         <div class="controls">
-            <div class="control-icon-btn" title="Rückgängig machen     Strg + Z">&#984396;</div>
-            <div class="control-icon-btn" title="Wiederherstellen     Strg + Y">&#984142;</div>
+            <div class="control-icon-btn" @click="emit('undo')" title="Rückgängig machen     Strg + Z">&#984396;</div>
+            <div class="control-icon-btn" @click="emit('redo')" title="Wiederherstellen     Strg + Y">&#984142;</div>
             <div class="control-icon-btn" @click="emit('delete')" :class="{'disabled': !selectedElements.length}" title="Auswahl löschen     Entf">&#985722;</div>
         </div>
 

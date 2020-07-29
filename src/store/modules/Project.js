@@ -199,7 +199,8 @@ const actions = {
 
         
         commit('setChanged_', true)
-        commit('setBackgroundChanged_', {index: getters.activeIndex , changed: true})
+        commit('addToHistory_', { action: 'add-element' })
+        commit('setBackgroundChanged_', { index: getters.activeIndex , changed: true })
         commit('insertStructure_', {
             trace: payload.trace,
             position: payload.position,
@@ -263,6 +264,14 @@ const actions = {
         {
             commit('deselectElements_', { uuids: [...payload.uuids] })
         }
+    },
+
+    undo({ commit }, payload) {
+        console.log('undo '+payload.steps+'x')
+    },
+
+    redo({ commit }, payload) {
+        console.log('redo '+payload.steps+'x')
     },
 
 
@@ -697,6 +706,11 @@ const mutations = {
 
     setChanged_: (state, param) => {
         state.document.meta.changed = param
+    },
+
+    addToHistory_: (state, param) => {
+        let doc = cloneDeep(state.document.structures)
+        console.log({action: param.action, state: doc })
     },
 }
 

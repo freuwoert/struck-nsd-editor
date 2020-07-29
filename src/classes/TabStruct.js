@@ -13,8 +13,9 @@ export default class TabStruct {
             selectedStructures: [],
             focusedStructure: '',
         }
-        this.changes = []
-        this.changePosition = null
+        this.history = []
+        this.historyPosition = null
+        this.savePosition = null
         this.structures = {
             children: [
                 {

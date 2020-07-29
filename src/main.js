@@ -24,6 +24,8 @@ new Vue({
     },
     methods: {
         ...mapActions([
+            'undo',
+            'redo',
             'addTab',
             'saveFile',
             'openFiles',
@@ -66,6 +68,14 @@ new Vue({
             this.deleteElements({elementUUIDs: [
                 ...this.selectedElements
             ]})
+        })
+
+        EventBus.$on('undo', () => {
+            this.undo({steps: 1})
+        })
+
+        EventBus.$on('redo', () => {
+            this.redo({steps: 1})
         })
 
 
