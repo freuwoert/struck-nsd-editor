@@ -62,6 +62,7 @@ const getters = {
     savePath: (state) => state.document.meta.savePath,
     exportPath: (state) => state.document.meta.exportPath,
     view: (state) => state.document.ui.view,
+    debugDOC: (state) => state.document,
 }
 
 const actions = {
@@ -199,13 +200,13 @@ const actions = {
 
         
         commit('setChanged_', true)
-        commit('addToHistory_', { action: 'add-element' })
         commit('setBackgroundChanged_', { index: getters.activeIndex , changed: true })
         commit('insertStructure_', {
             trace: payload.trace,
             position: payload.position,
             element: payload.element
         })
+        commit('addToHistory_', { action: 'add-element' })
     },
 
     deleteElements({ commit }, payload) {
@@ -214,6 +215,7 @@ const actions = {
         if( !payload.hasOwnProperty('elementUUIDs') ) return
 
         commit('deleteElements_', payload)
+        commit('addToHistory_', { action: 'delete-element' })
     },
 
     setContent({ commit, getters }, payload) {
@@ -232,6 +234,7 @@ const actions = {
             trace: payload.trace,
             content: payload.content
         })
+        commit('addToHistory_', { action: 'set-content' })
     },
 
     addSlot({ commit, getters }, payload) {
@@ -241,6 +244,7 @@ const actions = {
         commit('addSlot_', {
             uuid: payload,
         })
+        commit('addToHistory_', { action: 'add-slot' })
     },
 
     selectElements({ commit }, payload) {
@@ -267,11 +271,11 @@ const actions = {
     },
 
     undo({ commit }, payload) {
-        console.log('undo '+payload.steps+'x')
+        commit('undo_', payload.steps)
     },
 
     redo({ commit }, payload) {
-        console.log('redo '+payload.steps+'x')
+        commit('redo_', payload.steps)
     },
 
 
@@ -710,7 +714,56 @@ const mutations = {
 
     addToHistory_: (state, param) => {
         let doc = cloneDeep(state.document.structures)
-        console.log({action: param.action, state: doc })
+
+        // If history pointer is not up to date, delete every action after the pointer
+        if( state.document.historyPosition !== state.document.history.length - 1 )
+        {
+            state.document.history.splice(state.document.historyPosition + 1, state.document.history.length - state.document.historyPosition)
+        }
+
+        // Pushes new state into history
+        state.document.history.push({ action: param.action, state: doc })
+
+        // Sets history pointer
+        state.document.historyPosition = state.document.history.length - 1
+    },
+
+    undo_: (state, param) => {
+        if( state.document.historyPosition - param >= 0 )
+        {
+            state.document.historyPosition -= param
+        }
+        else
+        {
+            state.document.historyPosition = 0
+        }
+
+        try {
+            state.document.structures = cloneDeep(state.document.history[state.document.historyPosition].state)
+        }
+        catch (error)
+        {
+            console.error(error)
+        }
+    },
+
+    redo_: (state, param) => {
+        if( state.document.historyPosition + param <= state.document.history.length - 1 )
+        {
+            state.document.historyPosition += param
+        }
+        else
+        {
+            state.document.historyPosition = state.document.history.length - 1
+        }
+
+        try {
+            state.document.structures = cloneDeep(state.document.history[state.document.historyPosition].state)
+        }
+        catch (error)
+        {
+            console.error(error)
+        }
     },
 }
 

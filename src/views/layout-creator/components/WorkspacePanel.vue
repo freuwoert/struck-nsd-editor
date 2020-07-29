@@ -17,6 +17,10 @@
                 <div class="item" :class="{'disabled': contextInfo.context !== 'switch'}" @click="addCase()">Case hinzufügen</div>
                 <div class="item" :class="{'disabled': contextInfo.context !== 'switch-slot'}" @click="deleteElement()">Case löschen</div>
             </div>
+
+            <div class="history">
+                <div class="action" v-for="(action, i) in debugDOC.history" :key="i" :class="{'active': i == debugDOC.historyPosition}">{{action.action}}</div>
+            </div>
         </div>
     </div>
 </template>
@@ -34,6 +38,7 @@
                 'contextMenuUI',
                 'contextMenu',
                 'contextInfo',
+                'debugDOC',
             ]),
         },
         mounted() {
@@ -95,6 +100,30 @@
         background: var(--dark-background)
         overflow: hidden
         position: relative
+
+        .history
+            width: 270px
+            height: 500px
+            background: var(--background)
+            position: absolute
+            top: 0
+            right: 5px
+            border-radius: 7px
+            overflow-y: auto
+
+            .action
+                width: 100%
+                height: 30px
+                line-height: 20px
+                text-align: left
+                font-size: 15px
+                font-weight: 700
+                padding: 5px 8px
+                color: var(--color)
+                border-left: 4px solid transparent
+
+                &.active
+                    border-color: var(--primary)
 
         .context-menu
             background: var(--background)
