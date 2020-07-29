@@ -23,7 +23,9 @@ else
 {
     app.on('second-instance', (event, commandLine, workingDirectory) => {
 
-        toRenderer(['openOnStartup', commandLine[3]])
+        mainWindow.webContents.send('open-on-startup', {
+            path: commandLine[3]
+        })
 
         // Refocuses the window
         if (mainWindow)
@@ -89,11 +91,6 @@ let createWindow = () => {
 
 
 
-let toRenderer = (arg) => {
-    mainWindow.webContents.send('mainCommand', arg)
-}
-
-
 /*
  *  Before I forget it again: YOU have to trigger "loaded" from the renderer
  *  Geez ._.
@@ -101,26 +98,32 @@ let toRenderer = (arg) => {
 
 ipcMain.on('loaded', (event) => {
 
-    toRenderer(['openOnStartup', process.argv[1]])
+    mainWindow.webContents.send('open-on-startup', {
+        path: process.argv[1]
+    })
 
     autoUpdater.on('error', function (err) {
-        toRenderer(['update_error', JSON.stringify(err)])
+        mainWindow.webContents.send('update-error', {
+            error: JSON.stringify(err)
+        })
     })
 
     autoUpdater.on('checking-for-update', () => {
-        toRenderer(['update_checking'])
+        mainWindow.webContents.send('checking-for-update')
     })
 
     autoUpdater.on('update-available', function (info) {
-        toRenderer(['update_available', JSON.stringify(info)])
+        mainWindow.webContents.send('update-available', {
+            version: JSON.stringify(info)
+        })
     })
 
     autoUpdater.on('update-not-available', function () {
-        toRenderer(['update_not_available'])
+        mainWindow.webContents.send('update-not-available')
     })
 
     autoUpdater.on('update-downloaded', function () {
-        toRenderer(['update_downloaded'])
+        mainWindow.webContents.send('update-downloaded')
     })
 
     autoUpdater.logger = log

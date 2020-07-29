@@ -1,3 +1,4 @@
+import fs from 'fs'
 import Vue from 'vue'
 import App from './App.vue'
 import store from '@/store/store'
@@ -77,32 +78,37 @@ new Vue({
         ipcRenderer.send('loaded')
 
         // Gets paths of files that should be opened on startup
-        ipcRenderer.on('open-on-startup', function(e, args) {
-            console.log(args.paths)
+        ipcRenderer.on('open-on-startup', (e, args) => {
+
+            // Checks if path is file and if path exists
+            if( fs.lstatSync(args.path).isFile() && fs.existsSync(args.path) )
+            {
+                this.openFiles({openPaths: [args.path], selectOnCreation: true})
+            }
         })
 
         // Checks Github for updates
-        ipcRenderer.on('checking-for-updates', function() {
+        ipcRenderer.on('checking-for-update', function() {
             console.log('Suche nach Updates...')
         })
 
         // Notifies user of updates
-        ipcRenderer.on('updates-available', function(e, args) {
+        ipcRenderer.on('update-available', function(e, args) {
             console.log(`Update gefunden: Version ${args.version}`)
         })
 
         // Notifies user of non existing updates
-        ipcRenderer.on('no-updates-available', function() {
+        ipcRenderer.on('update-not-available', function() {
             console.log('Du bist auf dem neusten Stand!')
         })
 
         // Notifies user of finished download
-        ipcRenderer.on('updates-downloaded', function() {
+        ipcRenderer.on('update-downloaded', function() {
             console.log('Update wurde heruntergeladen!')
         })
 
         // Notifies user of update errors
-        ipcRenderer.on('update-errors', function(e, args) {
+        ipcRenderer.on('update-error', function(e, args) {
             console.log(`Update Fehler: ${args.error}`)
         })
 

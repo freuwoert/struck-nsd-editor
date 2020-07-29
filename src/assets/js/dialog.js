@@ -37,9 +37,9 @@ export default {
             }
             dialog.showOpenDialog(options).then((data) => {
                 if (!data.canceled) resolve(data.filePaths)
-                else resolve(null)
+                else resolve([])
             }).catch((error) => {
-                resolve(null)
+                resolve([])
             })
         })
     },
