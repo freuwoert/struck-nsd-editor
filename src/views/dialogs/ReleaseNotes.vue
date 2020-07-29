@@ -8,9 +8,15 @@
             <span class="headline">Willkommen in Struck!</span>
             <div class="release-note-container">
                 Was ist neu:<br>
-                » Du kannst nun auch Cases hinzufügen und löschen<br>
+                <!-- 0.7.0 -->
+                » Undo / Redo ist jetzt da!<br>
+
+                <!-- 0.6.0 -->
+                <!-- » Du kannst nun auch Cases hinzufügen und löschen<br>
                 » Es gibt nun ein Kontext-Menü<br>
-                » Diverse Bugs wurden gefixt<br>
+                » Diverse Bugs wurden gefixt<br> -->
+
+                <!-- 0.5.0 -->
                 <!-- » Elemente hinzufügen und löschen<br>
                 » Dateien speichern<br>
                 » Dateien als PNG oder JPG exportieren<br> -->

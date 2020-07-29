@@ -18,7 +18,7 @@
                 <div class="item" :class="{'disabled': contextInfo.context !== 'switch-slot'}" @click="deleteElement()">Case löschen</div>
             </div>
 
-            <div class="history">
+            <div class="history" v-show="false">
                 <div class="action" v-for="(action, i) in debugDOC.history" :key="i" :class="{'active': i == debugDOC.historyPosition}">{{action.action}}</div>
             </div>
         </div>
