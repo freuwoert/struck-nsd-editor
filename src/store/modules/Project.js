@@ -26,7 +26,7 @@ const getters = {
         {
             handles.push({
                 name: tab.meta.name,
-                changed: tab.meta.changed,
+                saved: tab.historyPosition == tab.savePosition,
                 UUID: tab.UUID
             })
         }
@@ -62,6 +62,9 @@ const getters = {
     savePath: (state) => state.document.meta.savePath,
     exportPath: (state) => state.document.meta.exportPath,
     view: (state) => state.document.ui.view,
+    history: (state) => state.document.history,
+    historyPosition: (state) => state.document.historyPosition,
+    savePosition: (state) => state.document.savePosition,
     debugDOC: (state) => state.document,
 }
 
@@ -198,9 +201,7 @@ const actions = {
         }
         
 
-        
-        commit('setChanged_', true)
-        commit('setBackgroundChanged_', { index: getters.activeIndex , changed: true })
+
         commit('insertStructure_', {
             trace: payload.trace,
             position: payload.position,
@@ -228,8 +229,6 @@ const actions = {
 
 
         
-        commit('setChanged_', true)
-        commit('setBackgroundChanged_', {index: getters.activeIndex , changed: true})
         commit('setContent_', {
             trace: payload.trace,
             content: payload.content
@@ -239,11 +238,7 @@ const actions = {
 
     addSlot({ commit, getters }, payload) {
 
-        commit('setChanged_', true)
-        commit('setBackgroundChanged_', {index: getters.activeIndex , changed: true})
-        commit('addSlot_', {
-            uuid: payload,
-        })
+        commit('addSlot_', { uuid: payload })
         commit('addToHistory_', { action: 'add-slot' })
     },
 
@@ -308,12 +303,7 @@ const actions = {
             // ToDo: not only the active document
             await fs.writeFile(savePath, JSON.stringify(state.document))
 
-            commit('setBackgroundChanged_', {index, changed: false})
-
-            if( isActive )
-            {
-                commit('setChanged_', false)
-            }
+            commit('setSavePosition_', state.document.historyPosition)
         }
         catch(error)
         {
@@ -321,19 +311,9 @@ const actions = {
         }
     },
 
-    async chooseSavePath({ commit, getters }) {
-        let index = getters.activeIndex
-        let savePath = await Dialog.saveDialog()
-
-        commit('setBackgroundSavePath_', {index, savePath})
-        commit('setSavePath_', savePath)
-    },
-
     async chooseExportPath({ commit, getters }) {
         let index = getters.activeIndex
         let exportPath = await Dialog.exportDialog()
-
-        console.log(exportPath)
 
         commit('setBackgroundExportPath_', {index, exportPath})
         commit('setExportPath_', exportPath)
@@ -448,10 +428,6 @@ const mutations = {
 
     setBackgroundExportPath_: (state, param) => {
         state.tabs[param.index].meta.exportPath = param.exportPath
-    },
-
-    setBackgroundChanged_: (state, param) => {
-        state.tabs[param.index].meta.changed = param.changed
     },
 
 
@@ -708,8 +684,8 @@ const mutations = {
         state.document.meta.exportPath = param
     },
 
-    setChanged_: (state, param) => {
-        state.document.meta.changed = param
+    setSavePosition_: (state, param) => {
+        state.document.savePosition = param
     },
 
     addToHistory_: (state, param) => {

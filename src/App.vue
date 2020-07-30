@@ -5,7 +5,7 @@
                 <div class="window-title">
                     <div class="tab-container">
                         <div class="tab" :key="i" v-for="(tab, i) in tabHandles" :class="{'active' : tab.UUID === activeUUID}">
-                            <div class="change-dot" :class="{'active' : tab.changed}"></div>
+                            <div class="change-dot" :class="{'active' : !tab.saved}"></div>
                             <div class="title" :title="tab.name" @click="selectTab(tab.UUID)">{{tab.name}}</div>
                             <div class="close" @click="deleteTab(tab.UUID)">&#983382;</div>
                         </div>

@@ -3,7 +3,6 @@ export default class TabStruct {
     constructor(uuid = '') {
         this.UUID = uuid
         this.meta = {
-            changed: false,
             name: null,
             savePath: null,
             exportPath: null,
@@ -13,7 +12,19 @@ export default class TabStruct {
             selectedStructures: [],
             focusedStructure: '',
         }
-        this.history = []
+        this.history = [{
+            action: 'base-state',
+            state: {
+                children: [
+                    {
+                        uuid: '87e31692-1fa2-4dd7-aa2b-50a9b16abcfa',
+                        type: 'endless-loop',
+                        content: 'main()',
+                        children: [],
+                    }
+                ]
+            }
+        }]
         this.historyPosition = null
         this.savePosition = null
         this.structures = {
