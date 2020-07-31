@@ -18,8 +18,8 @@
                 <div class="item" :class="{'disabled': contextInfo.context !== 'switch-slot'}" @click="deleteElement()">Case löschen</div>
             </div>
 
-            <div class="history" v-show="false">
-                <div class="action" v-for="(action, i) in debugDOC.history" :key="i" :class="{'active': i == debugDOC.historyPosition}">{{action.action}}</div>
+            <div class="history" v-if="false">
+                <div class="action" v-for="(action, i) in debugDOC.history" :key="i" :class="[{'active': i == debugDOC.historyPosition}, {'saved': i == debugDOC.savePosition}]">{{action.action}}</div>
             </div>
         </div>
     </div>
@@ -108,10 +108,11 @@
             position: absolute
             top: 0
             right: 5px
-            border-radius: 7px
+            border-radius: 5px
             overflow-y: auto
 
             .action
+                border-radius: 5px
                 width: 100%
                 height: 30px
                 line-height: 20px
@@ -120,10 +121,14 @@
                 font-weight: 700
                 padding: 5px 8px
                 color: var(--color)
-                border-left: 4px solid transparent
+                border-left: 3px solid transparent
+                border-right: 3px solid transparent
 
                 &.active
-                    border-color: var(--primary)
+                    border-left-color: var(--primary)
+
+                &.saved
+                    border-right-color: #77E3C7
 
         .context-menu
             background: var(--background)

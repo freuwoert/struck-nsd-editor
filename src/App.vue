@@ -35,12 +35,12 @@
             <spinner class="spinner" color="white" stroke="4"></spinner>
         </div>
 
-        <view-layout-creator></view-layout-creator>
+        <view-layout-creator v-if="hasTabs"></view-layout-creator>
 
         <!-- Overlays / Popups -->
-        <settings v-show="settingsUI"></settings>
-        <export v-show="exportUI"></export>
-        <release-notes v-show="releaseNoteUI"></release-notes>
+        <settings v-if="hasTabs" v-show="settingsUI"></settings>
+        <export v-if="hasTabs" v-show="exportUI"></export>
+        <release-notes v-if="hasTabs" v-show="releaseNoteUI"></release-notes>
     </div>
 </template>
 
@@ -49,13 +49,15 @@
 </style>
 
 <script>
+    // import { EventBus } from './assets/js/event-bus'
+
     import { mapGetters, mapActions } from 'vuex'
     import Settings from './views/settings/Settings.vue'
     import Export from './views/dialogs/Export.vue'
     import ReleaseNotes from './views/dialogs/ReleaseNotes.vue'
     import Spinner from './views/components/Spinner.vue'
 
-    import ViewLayoutCreator from './views/layout-creator/LayoutCreator.vue'
+    import ViewLayoutCreator from './views/editor/Editor.vue'
 
     export default {
         computed: {
@@ -66,6 +68,7 @@
                 'preloaderUI',
                 'settingsUI',
                 'exportUI',
+                'hasTabs',
             ]),
         },
         methods: {

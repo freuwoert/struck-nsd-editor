@@ -1,4 +1,4 @@
-import { EventBus } from '../../assets/js/event-bus'
+// import { EventBus } from '../../assets/js/event-bus'
 import Dialog from '../../assets/js/dialog'
 import TabStruct from '../../classes/TabStruct'
 import { promises as fs } from 'fs'
@@ -8,16 +8,10 @@ const cloneDeep = require('lodash.clonedeep')
 
 const state = {
     activeUUID: null,
-    history: [],
     tabs: [],
-    document: new TabStruct('STARTER_UUID').getStruct()
 }
 
 const getters = {
-
-    //////////
-    // Tabs //
-    //////////
 
     tabHandles: (state) => {
         let handles = []
@@ -50,22 +44,39 @@ const getters = {
         return index
     },
 
+    hasTabs: (state) => {
+        return state.tabs.length > 0
+    },
 
+    activeUUID: (state) => {
+        return state.activeUUID
+    },
 
-    //////////////
-    // Document //
-    //////////////
+    selectedElements: (state, getters) => {
+        return state.tabs[getters.activeIndex].ui.selectedStructures
+    },
 
-    activeUUID: (state) => state.document.UUID,
-    selectedElements: (state) => state.document.ui.selectedStructures,
-    docStructures: (state) => state.document.structures,
-    savePath: (state) => state.document.meta.savePath,
-    exportPath: (state) => state.document.meta.exportPath,
-    view: (state) => state.document.ui.view,
-    history: (state) => state.document.history,
-    historyPosition: (state) => state.document.historyPosition,
-    savePosition: (state) => state.document.savePosition,
-    debugDOC: (state) => state.document,
+    docStructures: (state, getters) => {
+        return state.tabs[getters.activeIndex].structures
+    },
+    savePath: (state, getters) => {
+        return state.tabs[getters.activeIndex].meta.savePath
+    },
+    exportPath: (state, getters) => {
+        return state.tabs[getters.activeIndex].meta.exportPath
+    },
+    history: (state, getters) => {
+        return state.tabs[getters.activeIndex].history
+    },
+    historyPosition: (state, getters) => {
+        return state.tabs[getters.activeIndex].historyPosition
+    },
+    savePosition: (state, getters) => {
+        return state.tabs[getters.activeIndex].savePosition
+    },
+    debugDOC: (state, getters) => {
+        return state.tabs[getters.activeIndex]
+    },
 }
 
 const actions = {
@@ -77,11 +88,6 @@ const actions = {
     addTab({ commit, dispatch }, payload) {
         const uuid = require('uuid').v4()
         let tab = new TabStruct(uuid).getStruct()
-
-        if( payload.view )
-        {
-            tab.ui.view = payload.view
-        }
 
         commit('addTabs_', [tab])
 
@@ -120,34 +126,11 @@ const actions = {
         }
     },
 
-    selectTab({ commit, state }, payload) {
+    selectTab({ commit }, payload) {
 
-        let oldIndex = false
-        let newIndex = false
-
-        for (let i = 0; i < state.tabs.length; i++)
-        {
-            if( !oldIndex && state.tabs[i].UUID === state.activeUUID) oldIndex = i
-            if( !newIndex && state.tabs[i].UUID === payload) newIndex = i
-        }
-
-        if( oldIndex !== false )
-        {
-            // Saves all progress of the document module to it's counterpart in the tabs array
-            commit('documentToBackground_', {
-                index: oldIndex,
-                data: state.document,
-            })
-        }
-
-        if( newIndex !== false )
-        {
-            // Loads all data of a chosen tab in the tabs array into the document
-            // ref: Document module
-            commit('documentToForeground_', {
-                data: state.tabs[newIndex],
-            })
-        }
+        commit('setActiveUUID_', {
+            uuid: payload
+        })
     },
 
 
@@ -156,7 +139,7 @@ const actions = {
     // Document //
     //////////////
 
-    createElement({ commit, state, getters }, payload) {
+    createElement({ commit, getters }, payload) {
         
         // let path = 'state.document.structures'
         // let layers = null
@@ -175,7 +158,7 @@ const actions = {
 
 
 
-        // TODO: check if trace is traversable
+        // ToDo: check if trace is traversable
 
 
 
@@ -205,18 +188,28 @@ const actions = {
         commit('insertStructure_', {
             trace: payload.trace,
             position: payload.position,
-            element: payload.element
+            element: payload.element,
+            index: getters.activeIndex,
         })
-        commit('addToHistory_', { action: 'add-element' })
+        commit('addToHistory_', {
+            action: 'add-element',
+            index: getters.activeIndex,
+        })
     },
 
-    deleteElements({ commit }, payload) {
+    deleteElements({ commit, getters }, payload) {
 
         // Checks for elementUUIDs
         if( !payload.hasOwnProperty('elementUUIDs') ) return
 
-        commit('deleteElements_', payload)
-        commit('addToHistory_', { action: 'delete-element' })
+        commit('deleteElements_', {
+            elementUUIDs: payload.elementUUIDs,
+            index: getters.activeIndex,
+        })
+        commit('addToHistory_', {
+            action: 'delete-element',
+            index: getters.activeIndex,
+        })
     },
 
     setContent({ commit, getters }, payload) {
@@ -231,18 +224,28 @@ const actions = {
         
         commit('setContent_', {
             trace: payload.trace,
-            content: payload.content
+            content: payload.content,
+            index: getters.activeIndex,
         })
-        commit('addToHistory_', { action: 'set-content' })
+        commit('addToHistory_', {
+            action: 'set-content',
+            index: getters.activeIndex,
+        })
     },
 
     addSlot({ commit, getters }, payload) {
 
-        commit('addSlot_', { uuid: payload })
-        commit('addToHistory_', { action: 'add-slot' })
+        commit('addSlot_', {
+            uuid: payload,
+            index: getters.activeIndex,
+        })
+        commit('addToHistory_', {
+            action: 'add-slot',
+            index: getters.activeIndex,
+        })
     },
 
-    selectElements({ commit }, payload) {
+    selectElements({ commit, getters }, payload) {
         
         // Checks for uuids
         if( !payload.hasOwnProperty('uuids') ) return
@@ -250,27 +253,43 @@ const actions = {
         // Checks for clearPrevious
         if( !payload.hasOwnProperty('clearPrevious') ) payload.clearPrevious = true
 
-        commit('selectElements_', { uuids: [...payload.uuids], clearPrevious: payload.clearPrevious })
+        commit('selectElements_', {
+            uuids: [...payload.uuids],
+            clearPrevious: payload.clearPrevious,
+            index: getters.activeIndex,
+        })
     },
 
-    deselectElements({ commit }, payload) {
+    deselectElements({ commit, getters }, payload) {
         
         if( !payload.uuids || payload.uuids.length === 0 )
         {
-            commit('deselectElements_', { deselectAll: true })
+            commit('deselectElements_', {
+                deselectAll: true,
+                index: getters.activeIndex,
+            })
         }
         else
         {
-            commit('deselectElements_', { uuids: [...payload.uuids] })
+            commit('deselectElements_', {
+                uuids: [...payload.uuids],
+                index: getters.activeIndex,
+            })
         }
     },
 
-    undo({ commit }, payload) {
-        commit('undo_', payload.steps)
+    undo({ commit, getters }, payload) {
+        commit('undo_', {
+            steps: payload.steps,
+            index: getters.activeIndex,
+        })
     },
 
-    redo({ commit }, payload) {
-        commit('redo_', payload.steps)
+    redo({ commit, getters }, payload) {
+        commit('redo_', {
+            steps: payload.steps,
+            index: getters.activeIndex,
+        })
     },
 
 
@@ -284,8 +303,6 @@ const actions = {
         if( !payload ) payload = { uuid: false, savePath: false, force: false }
 
         let index = getters.activeIndex
-        let uuid = payload.uuid ? payload.uuid : state.activeUUID
-        let isActive = state.activeUUID === uuid ? true : false
 
         let savePath = payload.savePath ? payload.savePath : state.tabs[index].meta.savePath
 
@@ -294,16 +311,21 @@ const actions = {
         {
             savePath = await Dialog.saveDialog()
 
-            commit('setBackgroundSavePath_', {index, savePath})
-            if( isActive ) commit('setSavePath_', savePath)
+            commit('setSavePath_', {
+                index,
+                savePath
+            })
         }
 
         try
         {
             // ToDo: not only the active document
-            await fs.writeFile(savePath, JSON.stringify(state.document))
+            await fs.writeFile(savePath, JSON.stringify(state.tabs[getters.activeIndex]))
 
-            commit('setSavePosition_', state.document.historyPosition)
+            commit('setSavePosition_', {
+                historyPosition: state.tabs[getters.activeIndex].historyPosition,
+                index,
+            })
         }
         catch(error)
         {
@@ -315,8 +337,10 @@ const actions = {
         let index = getters.activeIndex
         let exportPath = await Dialog.exportDialog()
 
-        commit('setBackgroundExportPath_', {index, exportPath})
-        commit('setExportPath_', exportPath)
+        commit('setExportPath_', {
+            index,
+            exportPath,
+        })
     },
 
     /*
@@ -394,10 +418,6 @@ const actions = {
 
 const mutations = {
 
-    //////////
-    // Tabs //
-    //////////
-
     addTabs_: (state, param) => {
         state.tabs.push( ...param )
     },
@@ -406,45 +426,14 @@ const mutations = {
         state.tabs.splice(param, 1)
     },
 
-    documentToBackground_: (state, param) => {
-        if( param.data.meta.isGhost === false )
-        {
-            state.tabs[param.index] = cloneDeep(param.data)
-        }
-    },
-
-    setBackgroundSavePath_: (state, param) => {
-        state.tabs[param.index].meta.savePath = param.savePath
-
-        try
-        {
-            state.tabs[param.index].meta.name = path.basename(param.savePath, path.extname(param.savePath))
-        }
-        catch (error)
-        {
-            console.error(error)
-        }
-    },
-
-    setBackgroundExportPath_: (state, param) => {
-        state.tabs[param.index].meta.exportPath = param.exportPath
-    },
-
-
-
-    //////////////
-    // Document //
-    //////////////
-
-    documentToForeground_: (state, param) => {
-        state.document = cloneDeep(param.data)
-        if( typeof param.data.UUID === 'string' ) state.activeUUID = param.data.UUID
+    setActiveUUID_: (state, param) => {
+        state.activeUUID = param.uuid
     },
 
     insertStructure_: (state, param) => {
 
         let layers = []
-        let path = 'state.document.structures'
+        let path = 'state.tabs['+param.index+'].structures'
         let location = null
         let injectPosition = 0
 
@@ -518,7 +507,7 @@ const mutations = {
 
     setContent_: (state, param) => {
         let layers = []
-        let path = 'state.document.structures'
+        let path = 'state.tabs['+param.index+'].structures'
         let location = null
 
         
@@ -584,33 +573,33 @@ const mutations = {
             }
         }
 
-        recursiveUuidSearch(state.document.structures)
+        recursiveUuidSearch(state.tabs[param.index].structures)
     },
 
     selectElements_: (state, param) => {
         if( param.clearPrevious )
         {
-            state.document.ui.selectedStructures = []
+            state.tabs[param.index].ui.selectedStructures = []
         }
 
-        state.document.ui.selectedStructures.push(...param.uuids)
+        state.tabs[param.index].ui.selectedStructures.push(...param.uuids)
     },
 
     deselectElements_: (state, param) => {
 
         if( param.deselectAll === true )
         {
-            state.document.ui.selectedStructures = []
+            state.tabs[param.index].ui.selectedStructures = []
         }
         else
         {
             for (const uuid of param.uuids)
             {
-                let i = state.document.ui.selectedStructures.indexOf(uuid)
+                let i = state.tabs[param.index].ui.selectedStructures.indexOf(uuid)
     
                 if( i >= 0 )
                 {
-                    state.document.ui.selectedStructures.splice(i, 1)
+                    state.tabs[param.index].ui.selectedStructures.splice(i, 1)
                 }
             }
         }
@@ -663,16 +652,16 @@ const mutations = {
             }
         }
 
-        recursiveDelete(state.document.structures)
+        recursiveDelete(state.tabs[param.index].structures)
     },
 
     setSavePath_: (state, param) => {
-        state.document.meta.savePath = param
+        state.tabs[param.index].meta.savePath = param.savePath
 
         // Try to extract name from savePath and set it in focused tab
         try
         {
-            state.document.meta.name = path.basename(param, path.extname(param))
+            state.tabs[param.index].meta.name = path.basename(param.savePath, path.extname(param.savePath))
         }
         catch(error)
         {
@@ -681,41 +670,41 @@ const mutations = {
     },
 
     setExportPath_: (state, param) => {
-        state.document.meta.exportPath = param
+        state.tabs[param.index].meta.exportPath = param.exportPath
     },
 
     setSavePosition_: (state, param) => {
-        state.document.savePosition = param
+        state.tabs[param.index].savePosition = param.historyPosition
     },
 
     addToHistory_: (state, param) => {
-        let doc = cloneDeep(state.document.structures)
+        let doc = cloneDeep(state.tabs[param.index].structures)
 
         // If history pointer is not up to date, delete every action after the pointer
-        if( state.document.historyPosition !== state.document.history.length - 1 )
+        if( state.tabs[param.index].historyPosition !== state.tabs[param.index].history.length - 1 )
         {
-            state.document.history.splice(state.document.historyPosition + 1, state.document.history.length - state.document.historyPosition)
+            state.tabs[param.index].history.splice(state.tabs[param.index].historyPosition + 1, state.tabs[param.index].history.length - state.tabs[param.index].historyPosition)
         }
 
         // Pushes new state into history
-        state.document.history.push({ action: param.action, state: doc })
+        state.tabs[param.index].history.push({ action: param.action, state: doc })
 
         // Sets history pointer
-        state.document.historyPosition = state.document.history.length - 1
+        state.tabs[param.index].historyPosition = state.tabs[param.index].history.length - 1
     },
 
     undo_: (state, param) => {
-        if( state.document.historyPosition - param >= 0 )
+        if( state.tabs[param.index].historyPosition - param.steps >= 0 )
         {
-            state.document.historyPosition -= param
+            state.tabs[param.index].historyPosition -= param.steps
         }
         else
         {
-            state.document.historyPosition = 0
+            state.tabs[param.index].historyPosition = 0
         }
 
         try {
-            state.document.structures = cloneDeep(state.document.history[state.document.historyPosition].state)
+            state.tabs[param.index].structures = cloneDeep(state.tabs[param.index].history[state.tabs[param.index].historyPosition].state)
         }
         catch (error)
         {
@@ -724,17 +713,17 @@ const mutations = {
     },
 
     redo_: (state, param) => {
-        if( state.document.historyPosition + param <= state.document.history.length - 1 )
+        if( state.tabs[param.index].historyPosition + param.steps <= state.tabs[param.index].history.length - 1 )
         {
-            state.document.historyPosition += param
+            state.tabs[param.index].historyPosition += param.steps
         }
         else
         {
-            state.document.historyPosition = state.document.history.length - 1
+            state.tabs[param.index].historyPosition = state.tabs[param.index].history.length - 1
         }
 
         try {
-            state.document.structures = cloneDeep(state.document.history[state.document.historyPosition].state)
+            state.tabs[param.index].structures = cloneDeep(state.tabs[param.index].history[state.tabs[param.index].historyPosition].state)
         }
         catch (error)
         {

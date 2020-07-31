@@ -8,10 +8,10 @@ export default class TabStruct {
             exportPath: null,
         }
         this.ui = {
-            view: null,
             selectedStructures: [],
-            focusedStructure: '',
         }
+        this.savePosition = 0
+        this.historyPosition = 0
         this.history = [{
             action: 'base-state',
             state: {
@@ -25,8 +25,6 @@ export default class TabStruct {
                 ]
             }
         }]
-        this.historyPosition = null
-        this.savePosition = null
         this.structures = {
             children: [
                 {
@@ -41,7 +39,6 @@ export default class TabStruct {
         // When class has been assigned an UUID
         if( this.UUID )
         {
-            this.ui.view = 'LANDING'
             this.meta.name = 'Unbenannt'
             this.meta.isGhost = false
         }

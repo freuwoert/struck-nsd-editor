@@ -41,7 +41,7 @@
 <script>
     import { mapGetters, mapActions } from 'vuex'
     import Spinner from '../components/Spinner.vue'
-    import RenderStructure from '../layout-creator/components/RenderStructure'
+    import RenderStructure from '../editor/components/RenderStructure'
     import DropDown from '../components/DropDown.vue'
     import { EventBus } from '../../assets/js/event-bus.js'
     import htmlToImage from 'html-to-image'
