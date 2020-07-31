@@ -75,14 +75,14 @@
 
 
 
-        <div class="if" v-if="structure.type === 'if'" @contextmenu="rightClick($event, {context: 'element', uuid: structure.uuid})">
-            <div class="content-container">
-                <div class="content" @click.stop @blur="blur($event)" contenteditable="true" v-html="configuredSanitizeHTML(structure.content)"></div>
+        <div class="if" ref="widthElement" v-if="structure.type === 'if'" @contextmenu="rightClick($event, {context: 'element', uuid: structure.uuid})">
+            <div class="content-container" ref="heightElement">
+                <div class="content" @click.stop @blur="blur($event)" @input="updatePathUI()" contenteditable="true" v-html="configuredSanitizeHTML(structure.content)"></div>
             </div>
 
-            <div class="condition-container">
+            <div class="condition-container" ref="conditions">
                 <div class="condition-slot" v-for="(slot, i) in structure.slots" :key="i">
-                    <div class="label" @click.stop @blur="blur($event, trace+'-'+i+':N')" contenteditable="true" v-html="configuredSanitizeHTML(slot.content)"></div>
+                    <div class="label" @click.stop @blur="blur($event, trace+'-'+i+':N')" @input="updatePathUI()" contenteditable="true" v-html="configuredSanitizeHTML(slot.content)"></div>
 
                     <structure v-for="(child, j) in slot.children" :key="j" :trace="trace+'-'+i+':'+j" :structure="child"></structure>
                     <div class="placeholder" v-show="slot.children.length == 0"></div>
@@ -91,23 +91,23 @@
                 </div>
             </div>
 
-            <!-- <svg class="condition-path" preserveAspectRatio="none" viewBox="0 0 400 40">
-                <polyline points="0 0 200 40 400 0"></polyline>
-            </svg> -->
+            <svg class="condition-path" preserveAspectRatio="none" :viewBox="viewboxValues">
+                <polyline :points="pathValues"></polyline>
+            </svg>
 
             <div class="hitbox hitbox-bottom" @dragstart.prevent @click.stop @mousedown="mouseDown($event, 'below')"></div>
         </div>
 
 
 
-        <div class="switch" v-if="structure.type === 'switch'" @contextmenu="rightClick($event, {context: 'switch', uuid: structure.uuid})">
-            <div class="content-container">
-                <div class="content" @click.stop @blur="blur($event)" contenteditable="true" v-html="configuredSanitizeHTML(structure.content)"></div>
+        <div class="switch" ref="widthElement" v-if="structure.type === 'switch'" @contextmenu="rightClick($event, {context: 'switch', uuid: structure.uuid})">
+            <div class="content-container" ref="heightElement">
+                <div class="content" @click.stop @blur="blur($event)" @input="updatePathUI()" contenteditable="true" v-html="configuredSanitizeHTML(structure.content)"></div>
             </div>
 
-            <div class="condition-container">
+            <div class="condition-container" ref="conditions">
                 <div class="condition-slot" v-for="(slot, i) in structure.slots" :key="i" @click="selectElement($event, slot.uuid)" @contextmenu="rightClick($event, {context: 'switch-slot', uuid: slot.uuid})" :class="{'selected': selectedElements.includes(slot.uuid)}">
-                    <div class="label" @click.stop @blur="blur($event, trace+'-'+i+':N')" contenteditable="true" v-html="configuredSanitizeHTML(slot.content)"></div>
+                    <div class="label" @click.stop @blur="blur($event, trace+'-'+i+':N')" @input="updatePathUI()" contenteditable="true" v-html="configuredSanitizeHTML(slot.content)"></div>
 
                     <structure v-for="(child, j) in slot.children" :key="j" :trace="trace+'-'+i+':'+j" :structure="child"></structure>
                     <div class="placeholder" v-show="slot.children.length == 0"></div>
@@ -116,9 +116,9 @@
                 </div>
             </div>
 
-            <!-- <svg class="condition-path" preserveAspectRatio="none" viewBox="0 0 400 40">
-                <polyline points="0 0 200 40 400 0"></polyline>
-            </svg> -->
+            <svg class="condition-path" preserveAspectRatio="none" :viewBox="viewboxValues">
+                <polyline :points="pathValues"></polyline>
+            </svg>
 
             <div class="hitbox hitbox-bottom" @dragstart.prevent @click.stop @mousedown="mouseDown($event, 'below')"></div>
         </div>
@@ -140,10 +140,45 @@
             },
             trace: {}
         },
+        data() {
+            return {
+                width: 0,
+                height: 0,
+                innerWidth: 0
+            }
+        },
+        mounted() {
+            if( ['switch', 'if'].includes(this.structure.type) )
+            {
+                this.updatePathUI()
+
+            }
+            // Listens to document-update
+            EventBus.$on('document-update', () => {
+                this.$nextTick(()=>{
+                    this.updatePathUI()
+                    console.log('test')
+                })
+            })
+        },
+        updated() {
+            if( ['switch', 'if'].includes(this.structure.type) )
+            {
+                this.updatePathUI()
+            }
+        },
         computed: {
             ...mapGetters([
                 'selectedElements',
             ]),
+
+            viewboxValues() {
+                return `0 0 ${this.width} ${this.height}`
+            },
+
+            pathValues() {
+                return `0 0 ${this.width - this.innerWidth} ${this.height} ${this.width} 0`
+            }
         },
         methods: {
             ...mapActions([
@@ -169,6 +204,22 @@
                 this.setContent({trace, content})
             },
 
+            selectElement(event, uuid = this.structure.uuid) {
+
+                event.stopPropagation()
+                this.selectElements({uuids: [uuid], clearPrevious: !event.ctrlKey})
+            },
+
+            rightClick(event, info = {context: null, uuid: null}) {
+
+                event.stopPropagation()
+                this.setContextMenu([event.screenX, event.screenY])
+                this.setContextMenuUI(true)
+                this.setContextInfo(info)
+            },
+
+
+
             configuredSanitizeHTML(html) {
 
                 let cleanHTML = ''
@@ -186,19 +237,17 @@
                 return cleanHTML
             },
 
-            selectElement(event, uuid = this.structure.uuid) {
+            updatePathUI() {
 
-                event.stopPropagation()
-                this.selectElements({uuids: [uuid], clearPrevious: !event.ctrlKey})
+                // For christs sake; I dont even care
+                try
+                {
+                    this.width = this.$refs.widthElement.offsetWidth
+                    this.height = this.$refs.heightElement.offsetHeight + this.$refs.conditions.lastChild.getElementsByClassName('label')[0].offsetHeight
+                    this.innerWidth = this.$refs.conditions.lastChild.offsetWidth
+                }
+                catch (error) {}
             },
-
-            rightClick(event, info = {context: null, uuid: null}) {
-
-                event.stopPropagation()
-                this.setContextMenu([event.screenX, event.screenY])
-                this.setContextMenuUI(true)
-                this.setContextInfo(info)
-            }
         },
         components: {
             StructureInput,
@@ -431,10 +480,9 @@
                 z-index: 1
 
             > .condition-path
-                height: 47px
                 width: 100%
                 position: absolute
-                top: 0
+                top: 0px
                 left: 0
                 stroke: #000
                 stroke-width: 0.8px
@@ -442,7 +490,7 @@
                 pointer-events: none
 
                 polyline
-                    fill: white
+                    fill: transparent
 
             > .condition-container
                 display: flex
@@ -524,7 +572,7 @@
                 pointer-events: none
 
                 polyline
-                    fill: white
+                    fill: transparent
 
             > .condition-container
                 display: flex

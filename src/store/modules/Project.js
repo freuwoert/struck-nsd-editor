@@ -1,4 +1,4 @@
-// import { EventBus } from '../../assets/js/event-bus'
+import { EventBus } from '../../assets/js/event-bus'
 import Dialog from '../../assets/js/dialog'
 import TabStruct from '../../classes/TabStruct'
 import { promises as fs } from 'fs'
@@ -691,6 +691,9 @@ const mutations = {
 
         // Sets history pointer
         state.tabs[param.index].historyPosition = state.tabs[param.index].history.length - 1
+
+        // Emits document-update
+        EventBus.$emit('document-update')
     },
 
     undo_: (state, param) => {

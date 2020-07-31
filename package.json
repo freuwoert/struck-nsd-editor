@@ -19,7 +19,7 @@
     "struck"
   ],
   "author": "Maurice Freuwört",
-  "license": "mit",
+  "license": "MIT",
   "dependencies": {
     "chai-as-promised": "^7.1.1",
     "color-convert": "^2.0.1",
