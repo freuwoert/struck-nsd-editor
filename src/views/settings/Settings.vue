@@ -24,6 +24,7 @@
                 <div class="name">Entwickler:</div>
                 <div class="input-container text">Maurice Freuwört</div>
             </div>
+            <div class="divider"></div>
             <div class="row">
                 <div class="ghost-button last-ghost-button" @click="setSettingsUI(false)">Abbrechen</div>
                 <div class="button last-button">Übernehmen</div>
@@ -101,6 +102,11 @@
                 letter-spacing: 0.5px
                 color: var(--color-bright)
                 user-select: none
+
+            .divider
+                margin: 10px 0 20px
+                width: 100%
+                border-bottom: 1px solid var(--color-lighter)
 
             .row
                 margin: 10px 0

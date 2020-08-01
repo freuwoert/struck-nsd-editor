@@ -7,22 +7,29 @@
             </div>
             <span class="headline">Willkommen in Struck!</span>
             <div class="release-note-container">
-                Was ist neu:<br>
-                <!-- 0.8.0 -->
-                » Die Benutzeroberfläche der Switch- und If-Blöcke wurde überarbeitet<br>
+                <h3>Was ist neu in der {{appVersion}}</h3><br>
+                <span class="">
+                    » Switch- und If-Benutzeroberfläche wurde überarbeitet<br>
+                </span><br>
 
-                <!-- 0.7.0 -->
-                <!-- » Undo / Redo ist jetzt da!<br> -->
+                <h3 class="previous">0.7.0</h3><br>
+                <span class="previous">
+                    » Undo und Redo ist jetzt da!<br>
+                </span><br>
 
-                <!-- 0.6.0 -->
-                <!-- » Du kannst nun auch Cases hinzufügen und löschen<br>
-                » Es gibt nun ein Kontext-Menü<br>
-                » Diverse Bugs wurden gefixt<br> -->
+                <h3 class="previous">0.6.0</h3><br>
+                <span class="previous">
+                    » Cases hinzufügen und löschen<br>
+                    » Kontext-Menü hinzugefügt<br>
+                    » Diverse Bugs wurden gefixt<br>
+                </span><br>
 
-                <!-- 0.5.0 -->
-                <!-- » Elemente hinzufügen und löschen<br>
-                » Dateien speichern<br>
-                » Dateien als PNG oder JPG exportieren<br> -->
+                <h3 class="previous">0.5.0</h3><br>
+                <span class="previous">
+                    » Elemente hinzufügen und löschen<br>
+                    » Dateien speichern<br>
+                    » Dateien als PNG oder JPG exportieren<br>
+                </span><br>
             </div>
             <div class="close-release-note" @click="setReleaseNoteUI(false)">Auf gehts!</div>
         </div>
@@ -35,6 +42,7 @@
         computed: {
             ...mapGetters([
                 'updateName',
+                'appVersion',
                 'releaseNoteUI',
             ]),
         },
@@ -72,7 +80,7 @@
             .release-image
                 height: 220px
                 width: 100%
-                margin-bottom: 70px
+                margin-bottom: 40px
                 border-radius: 20px  20px 0 0
                 background-image: url('~@/assets/images/interface/update_sprout.jpg')
                 background-repeat: no-repeat
@@ -106,13 +114,35 @@
                 text-align: center
 
             .release-note-container
-                width: calc(100% - 40px)
-                margin: 20px 40px 60px
+                width: calc(100% - 20px)
+                max-height: 300px
+                margin: 20px 10px 0px
+                padding: 0 15px
                 text-align: left
                 color: #333
                 font-size: 15px
                 line-height: 27px
                 overflow-y: auto
+
+                &::-webkit-scrollbar
+                    width: 10px
+                    height: 10px
+                    background-color: var(--dark-background)
+                    border: 4px solid var(--background)
+                    border-radius: 10px
+
+
+                &::-webkit-scrollbar-thumb 
+                    background: #bbb
+                    border: 3px solid var(--background)
+                    border-radius: 10px
+
+                h3
+                    margin-top: 30px
+                    margin-bottom: 5px
+                
+                .previous
+                    opacity: 0.7
 
             .close-release-note
                 height: 40px

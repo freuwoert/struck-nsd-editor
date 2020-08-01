@@ -114,7 +114,7 @@ ipcMain.on('loaded', (event) => {
 
     autoUpdater.on('update-available', function (info) {
         mainWindow.webContents.send('update-available', {
-            version: JSON.stringify(info)
+            version: JSON.stringify(info.version)
         })
     })
 
