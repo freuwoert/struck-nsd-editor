@@ -46,7 +46,7 @@
     "electron": "^9.4.0",
     "electron-builder": "^22.6.0",
     "electron-icon-builder": "^1.0.2",
-    "node-sass": "^4.14.1",
+    "node-sass": "^7.0.0",
     "sass-loader": "^8.0.2",
     "vue-cli-plugin-electron-builder": "^1.4.6",
     "vue-devtools": "^5.1.3",
